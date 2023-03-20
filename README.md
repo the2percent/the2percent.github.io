@@ -1,1 +1,1 @@
-# the2percent.github.io : https://github.com/the2percent/the2percent.github.io.git
+this is a website
