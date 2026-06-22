@@ -1,236 +1,1028 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Stealth Wealth - Quant Wealth Manager</title>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="css/styles.css" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 2% System — Adaptive Supertrend Strategy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050505;
+    --bg2: #0d0d0d;
+    --bg3: #141414;
+    --bg4: #1c1c1c;
+    --text: #E8E6E0;
+    --text2: #9A9890;
+    --text3: #5A5855;
+    --gold: #F5C842;
+    --gold2: #C4971A;
+    --green: #3DD68C;
+    --red: #E05555;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.1);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  section { padding: 96px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(5,5,5,0.92);
+    backdrop-filter: blur(12px);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .logo span { color: var(--text3); margin: 0 8px; }
+  .status-pill {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text2);
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    padding: 6px 14px; border-radius: 100px;
+  }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── HERO ── */
+  #hero { padding: 120px 0 96px; border-bottom: 1px solid var(--border); }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-title {
+    font-size: clamp(44px, 6vw, 80px);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .hero-title em {
+    font-style: normal; font-weight: 600;
+    color: var(--gold);
+  }
+  .hero-sub {
+    font-size: 18px; color: var(--text2); font-weight: 300;
+    max-width: 560px; margin-bottom: 72px; line-height: 1.7;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+  .stat-cell {
+    background: var(--bg);
+    padding: 28px 24px;
+  }
+  .stat-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text3); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .stat-value {
+    font-family: var(--mono); font-size: 28px; font-weight: 500;
+    color: var(--text); line-height: 1;
+  }
+  .stat-value.gold { color: var(--gold); }
+  .stat-value.green { color: var(--green); }
+  .stat-sub {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text3); margin-top: 6px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text3); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border2);
+  }
+  .section-title {
+    font-size: 32px; font-weight: 300; letter-spacing: -0.01em;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--text2); font-size: 15px; font-weight: 300; margin-bottom: 56px;
+  }
+
+  /* ── EQUITY CURVE ── */
+  #curve-container {
+    width: 100%; height: 340px; position: relative;
+    border: 1px solid var(--border2);
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--bg2);
+  }
+  #equity-svg { width: 100%; height: 100%; }
+  .curve-path {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .curve-fill {
+    opacity: 0.06;
+  }
+  .curve-annotation {
+    font-family: var(--mono); font-size: 11px; fill: var(--text3);
+  }
+  .curve-grid { stroke: var(--border); stroke-width: 0.5; }
+
+  /* ── YEAR BARS ── */
+  .year-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+  }
+  .year-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .year-card:hover { border-color: var(--border2); }
+  .year-card::before {
+    content: ''; position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--gold); opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .year-card:hover::before { opacity: 1; }
+  .year-label {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text3); margin-bottom: 14px;
+    letter-spacing: 0.05em;
+  }
+  .year-return {
+    font-family: var(--mono); font-size: 36px; font-weight: 500;
+    color: var(--gold); line-height: 1; margin-bottom: 4px;
+  }
+  .year-pnl {
+    font-family: var(--mono); font-size: 12px; color: var(--text2);
+    margin-bottom: 16px;
+  }
+  .year-bar-track {
+    height: 3px; background: var(--border2); border-radius: 2px;
+    overflow: hidden; margin-bottom: 12px;
+  }
+  .year-bar-fill {
+    height: 100%; background: var(--gold);
+    border-radius: 2px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .year-meta {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+  }
+
+  /* ── MONTHLY HEATMAP ── */
+  .heatmap-wrapper { overflow-x: auto; }
+  .heatmap {
+    display: grid;
+    grid-template-columns: 60px repeat(12, 1fr);
+    gap: 3px;
+    min-width: 760px;
+  }
+  .hm-header, .hm-year-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: 0.05em;
+  }
+  .hm-year-label { justify-content: flex-end; padding-right: 12px; }
+  .hm-cell {
+    height: 38px; border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 9px;
+    cursor: default; position: relative;
+    transition: transform 0.15s, outline 0.15s;
+  }
+  .hm-cell:hover { transform: scale(1.08); z-index: 10; outline: 1px solid rgba(255,255,255,0.3); }
+  .hm-cell.pos { background: #0d2318; color: var(--green); }
+  .hm-cell.neg { background: #251010; color: var(--red); }
+  .hm-cell.empty { background: var(--bg2); }
+  .hm-cell[data-intensity="1"] { background: #0d2318; }
+  .hm-cell[data-intensity="2"] { background: #0f2a1c; }
+  .hm-cell[data-intensity="3"] { background: #123422; }
+  .hm-cell[data-intensity="4"] { background: #163f28; }
+  .hm-cell[data-intensity="5"] { background: #1a4b2e; }
+  .hm-legend {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 16px; font-family: var(--mono); font-size: 10px; color: var(--text3);
+  }
+  .hm-legend-swatch {
+    width: 20px; height: 12px; border-radius: 1px;
+  }
+
+  /* ── RISK RATIOS ── */
+  .ratios-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--border); border: 1px solid var(--border);
+  }
+  .ratio-cell {
+    background: var(--bg);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .ratio-name {
+    font-family: var(--mono); font-size: 11px; color: var(--text3);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .ratio-value {
+    font-family: var(--mono); font-size: 40px; font-weight: 500;
+    color: var(--text); line-height: 1; margin-bottom: 8px;
+  }
+  .ratio-benchmark {
+    font-family: var(--mono); font-size: 11px; color: var(--text3);
+    margin-bottom: 12px;
+  }
+  .ratio-verdict {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--green); letter-spacing: 0.05em;
+  }
+  .ratio-bar-track {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--border2);
+  }
+  .ratio-bar-fill {
+    height: 100%; background: var(--gold);
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── DRAWDOWN ── */
+  .dd-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-bottom: 40px;
+  }
+  .dd-big {
+    background: var(--bg2); border: 1px solid var(--border);
+    padding: 32px; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .dd-big-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .dd-big-value {
+    font-family: var(--mono); font-size: 52px; font-weight: 500;
+    color: var(--text); line-height: 1;
+  }
+  .dd-big-note {
+    font-family: var(--mono); font-size: 11px; color: var(--text3); margin-top: 12px;
+  }
+  .dd-episodes {
+    background: var(--bg2); border: 1px solid var(--border);
+    padding: 32px;
+  }
+  .dd-ep-title {
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .dd-ep-row {
+    display: grid; grid-template-columns: 24px 1fr auto auto;
+    gap: 12px; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .dd-ep-row:last-child { border-bottom: none; }
+  .dd-ep-rank {
+    font-family: var(--mono); font-size: 11px; color: var(--text3);
+  }
+  .dd-ep-dates {
+    font-family: var(--mono); font-size: 11px; color: var(--text2);
+  }
+  .dd-ep-pct {
+    font-family: var(--mono); font-size: 13px; color: var(--red); font-weight: 500;
+  }
+  .dd-ep-recovery {
+    font-family: var(--mono); font-size: 11px; color: var(--text3); text-align: right;
+  }
+
+  /* ── SYSTEM SECTION ── */
+  .system-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .system-block { }
+  .system-block-title {
+    font-family: var(--mono); font-size: 11px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;
+  }
+  .system-block-text {
+    color: var(--text2); font-size: 15px; font-weight: 300; line-height: 1.75;
+  }
+  .system-spec {
+    margin-top: 32px; border: 1px solid var(--border);
+  }
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-key { color: var(--text3); font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .spec-val { color: var(--text); font-family: var(--mono); font-size: 13px; }
+  .spec-val.highlight { color: var(--gold); }
+
+  /* ── CAVEATS ── */
+  .caveat-box {
+    border: 1px solid rgba(245,200,66,0.2);
+    background: rgba(245,200,66,0.03);
+    padding: 36px 40px;
+  }
+  .caveat-title {
+    font-family: var(--mono); font-size: 11px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .caveat-list {
+    list-style: none; display: flex; flex-direction: column; gap: 14px;
+  }
+  .caveat-list li {
+    display: flex; gap: 16px; align-items: flex-start;
+    font-size: 14px; color: var(--text2); font-weight: 300; line-height: 1.6;
+  }
+  .caveat-list li::before {
+    content: '—'; font-family: var(--mono); color: var(--text3); flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+  }
+  .footer-inner {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-left {
+    font-family: var(--mono); font-size: 11px; color: var(--text3); line-height: 1.8;
+  }
+  .footer-right {
+    font-family: var(--mono); font-size: 10px; color: var(--text3);
+    text-align: right; line-height: 1.8;
+  }
+  .footer-not-sebi {
+    font-family: var(--mono); font-size: 10px; color: var(--red);
+    opacity: 0.7;
+  }
+
+  /* ── NEGATIVE PERIOD TABLE ── */
+  .period-table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--mono); font-size: 13px;
+  }
+  .period-table th {
+    color: var(--text3); font-weight: 400; font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 12px 16px; text-align: left;
+    border-bottom: 1px solid var(--border2);
+  }
+  .period-table td {
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .period-table tr:last-child td { border-bottom: none; }
+  .period-table tr:hover td { background: var(--bg2); }
+  .neg-pct { color: var(--red); }
+  .pos-big { color: var(--green); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    section { padding: 64px 0; }
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .year-grid { grid-template-columns: 1fr 1fr; }
+    .ratios-grid { grid-template-columns: 1fr; }
+    .system-cols { grid-template-columns: 1fr; }
+    .dd-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-right { text-align: center; }
+  }
+</style>
 </head>
+<body>
 
-<body id="page-top">
-    <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand" href="#page-top"><img src="assets/img/navbar-logo.jpeg" alt="..." /></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fas fa-bars ms-1"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="#features">Strategies</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#performance">Algo Performance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                </ul>
-            </div>
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo">THE2PERCENT <span>/</span> ADAPTIVE SUPERTREND</div>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        SYSTEM RUNNING · 2026
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Algorithmic Trading System · NSE Equities · Intraday</div>
+    <h1 class="hero-title">
+      1,929% return.<br>
+      <em>Zero negative years.</em>
+    </h1>
+    <p class="hero-sub">
+      A backtest of an adaptive trend-following system across Dixon Technologies and BSE Ltd.
+      4.3 years. Every trade accounted for. Fees deducted. No illusions.
+    </p>
+    <div class="hero-stats fade-in">
+      <div class="stat-cell">
+        <div class="stat-label">Net PnL</div>
+        <div class="stat-value gold">₹19.3L</div>
+        <div class="stat-sub">on ₹1L base capital</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">CAGR</div>
+        <div class="stat-value">108.1%</div>
+        <div class="stat-sub">annualised return</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Max Drawdown</div>
+        <div class="stat-value">12.23%</div>
+        <div class="stat-sub">recovered in 4 days</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Sharpe Ratio</div>
+        <div class="stat-value green">5.14</div>
+        <div class="stat-sub">world-class (&gt;3.0)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EQUITY CURVE -->
+<section id="equity">
+  <div class="container">
+    <div class="section-label">01 — Equity Curve</div>
+    <h2 class="section-title">How ₹1L became ₹20.3L</h2>
+    <p class="section-desc">Cumulative equity across all 1,785 trades. Fixed capital mode — no compounding of position size.</p>
+    <div id="curve-container" class="fade-in">
+      <svg id="equity-svg" viewBox="0 0 1100 340" preserveAspectRatio="none">
+        <!-- Grid lines -->
+        <line class="curve-grid" x1="0" y1="68" x2="1100" y2="68"/>
+        <line class="curve-grid" x1="0" y1="136" x2="1100" y2="136"/>
+        <line class="curve-grid" x1="0" y1="204" x2="1100" y2="204"/>
+        <line class="curve-grid" x1="0" y1="272" x2="1100" y2="272"/>
+        <!-- Year dividers -->
+        <line class="curve-grid" x1="220" y1="0" x2="220" y2="320" stroke-dasharray="4,4"/>
+        <line class="curve-grid" x1="440" y1="0" x2="440" y2="320" stroke-dasharray="4,4"/>
+        <line class="curve-grid" x1="660" y1="0" x2="660" y2="320" stroke-dasharray="4,4"/>
+        <line class="curve-grid" x1="880" y1="0" x2="880" y2="320" stroke-dasharray="4,4"/>
+        <!-- Year labels -->
+        <text class="curve-annotation" x="110" y="310" text-anchor="middle">2022</text>
+        <text class="curve-annotation" x="330" y="310" text-anchor="middle">2023</text>
+        <text class="curve-annotation" x="550" y="310" text-anchor="middle">2024</text>
+        <text class="curve-annotation" x="770" y="310" text-anchor="middle">2025</text>
+        <text class="curve-annotation" x="990" y="310" text-anchor="middle">2026</text>
+        <!-- Y axis labels -->
+        <text class="curve-annotation" x="8" y="72" text-anchor="start">₹20L</text>
+        <text class="curve-annotation" x="8" y="140" text-anchor="start">₹15L</text>
+        <text class="curve-annotation" x="8" y="208" text-anchor="start">₹10L</text>
+        <text class="curve-annotation" x="8" y="276" text-anchor="start">₹5L</text>
+        <!-- Area fill -->
+        <path id="curve-area" class="curve-fill" fill="url(#goldGrad)"/>
+        <!-- Main curve -->
+        <path id="curve-line" class="curve-path"/>
+        <!-- Milestone markers -->
+        <circle id="m1" r="4" fill="var(--gold)" opacity="0"/>
+        <circle id="m2" r="4" fill="var(--gold)" opacity="0"/>
+        <defs>
+          <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F5C842" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#F5C842" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- YEAR PERFORMANCE -->
+<section id="years">
+  <div class="container">
+    <div class="section-label">02 — Annual Performance</div>
+    <h2 class="section-title">Year by year</h2>
+    <p class="section-desc">Five consecutive positive years. No calendar year ended in loss.</p>
+    <div class="year-grid fade-in">
+      <div class="year-card">
+        <div class="year-label">2022 · 241 trades</div>
+        <div class="year-return">169.9%</div>
+        <div class="year-pnl">₹1,69,870</div>
+        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="88"></div></div>
+        <div class="year-meta">
+          <span>Win rate 47.3%</span>
+          <span>Fees 21.5%</span>
         </div>
-    </nav>
-    <!-- Masthead-->
-    <header class="masthead">
-        <div class="container">
-            <div class="masthead-subheading">unlock wealth secrets</div>
-            <div class="masthead-heading text-uppercase">Data driven and Quant-powered strategies</div>
-            <a class="btn btn-primary btn-xl text-uppercase" href="#performance">Know more</a>
+      </div>
+      <div class="year-card">
+        <div class="year-label">2023 · 308 trades</div>
+        <div class="year-return">273.6%</div>
+        <div class="year-pnl">₹2,73,624</div>
+        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="95"></div></div>
+        <div class="year-meta">
+          <span>Win rate 51.0%</span>
+          <span>Fees 17.8%</span>
         </div>
-    </header>
-
-     <!-- Services-->
-     <section class="page-section" id="features">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase">Strategies for Financial Fortunes</h2>
-                <h3 class="section-subheading text-muted">Building, Time-Tested Stealth Wealth</h3>
-            </div>
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-chart-line fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3">Futures</h4>
-                    <p class="text-muted">The intelligence driven algo works on Nifty-50 index based on last 14+ years data.</p>
-                   
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-chart-simple fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3">Equity Cash</h4>
-                    <p class="text-muted">The algorithm suggests best stocks for long term and positional swing.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fas fa-money-bill-trend-up fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="my-3">Mutual Fund</h4>
-                    <p class="text-muted">The algorithm suggests top mutual funds for best risk adjusted returns.</p>
-                </div>
-            </div>
+      </div>
+      <div class="year-card">
+        <div class="year-label">2024 · 475 trades</div>
+        <div class="year-return">534.0%</div>
+        <div class="year-pnl">₹5,33,989</div>
+        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="78"></div></div>
+        <div class="year-meta">
+          <span>Win rate 51.2%</span>
+          <span>Fees 14.6%</span>
         </div>
-    </section>
-
-    <!-- Performance-->
-    <section class="page-section" id="performance">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase" style="color: white;">Futures Profits & Loss in 2023</h2>
-                <h3 class="section-subheading" style="color: white;">Algo generated a return of <strong class="profit">103%</strong> for the year 2023</h3>
-                <h3 style="color: white;">Initial capital of 40L on Jan-01-2023 is now 81.2L on Dec-28-2023</h3>
-            </div>
-            <div class="row text-center">
-
-                <table style="width:100%">
-                    <tr>
-                        <th>Direction</th>
-                        <th>Entry Date</th>
-                        <th>Exit Date</th>
-                        <th>Total Days</th>
-                        <th>PnL</th>
-                    </tr>
-                    <tr>
-                        <td>Short</td>
-                        <td>27-02-2023 </td>
-                        <td>05-04-2023</td>
-                        <td>37</td>
-                        <td class="loss">-2%</td>
-                    </tr>
-                    <tr>
-                        <td>Long</td>
-                        <td>05-04-2023 </td>
-                        <td>18-08-2023</td>
-                        <td>135</td>
-                        <td class="profit">+46%</td>
-                    </tr>
-                    <tr>
-                        <td>Short</td>
-                        <td>18-08-2023 </td>
-                        <td>07-09-2023</td>
-                        <td>37</td>
-                        <td class="loss">-8%</td>
-                    </tr>
-                    <tr>
-                        <td>Long</td>
-                        <td>07-09-2023 </td>
-                        <td>28-09-2023</td>
-                        <td>21</td>
-                        <td class="loss">-2%</td>
-                    </tr>
-                    <tr>
-                        <td>Short</td>
-                        <td>28-09-2023 </td>
-                        <td>06-11-2023</td>
-                        <td>39</td>
-                        <td class="profit">+9%</td>
-                    </tr>
-                    <tr>
-                        <td>Long</td>
-                        <td>06-11-2023 </td>
-                        <td>28-12-2023</td>
-                        <td>52</td>
-                        <td class="profit">+60%</td>
-                    </tr>
-
-                </table>
-                <div style="color: white;margin-top: 40px;">
-                <strong>Interested in Algo performance over the last decade <br> & every trade details ? </strong> 
-
-                <div class="text-center" style="color: white;padding-top: 13px;">
-                    <a href="https://github.com/the2percent/SW_ANDROID_APK/releases/download/2/app-debug.apk" class="btn btn-primary btn-xl text-uppercase">Download App</a>
-                </div>
-            </div>
-                <!-- <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">E-Commerce</h4>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">Responsive Design</h4>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">Web Security</h4>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                    </div> -->
-            </div>
+      </div>
+      <div class="year-card">
+        <div class="year-label">2025 · 549 trades</div>
+        <div class="year-return">722.3%</div>
+        <div class="year-pnl">₹7,22,298</div>
+        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="100"></div></div>
+        <div class="year-meta">
+          <span>Win rate 58.3%</span>
+          <span>Fees 12.7%</span>
         </div>
-    </section>
-
-
-    <!-- Contact-->
-    <section class="page-section" id="contact" style="padding: 20px;background-color: #ffc800;">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-heading text-uppercase" style="color: white;">Contact Us</h2>
-                <h3 class="section-subheading" style="font-weight: 700;color: black;">stealthwealth.help@gmail.com</h3>
-            </div>
-            
+      </div>
+      <div class="year-card">
+        <div class="year-label">2026 · 212 trades (Jan–May)</div>
+        <div class="year-return">230.1%</div>
+        <div class="year-pnl">₹2,30,102</div>
+        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="32"></div></div>
+        <div class="year-meta">
+          <span>Win rate 57.5%</span>
+          <span>Fees 15.0%</span>
         </div>
-    </section>
-    <!-- Footer-->
-    <footer class="footer py-4" style="background-color:black">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8 text-lg-start" style="color: white;">Copyright &copy; Stealth Wealth 2023</div>
-                <!-- <div class="col-lg-4 my-3 my-lg-0">
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i
-                            class="fab fa-twitter"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i
-                            class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i
-                            class="fab fa-linkedin-in"></i></a>
-                </div> -->
-                <div class="col-lg-4 text-lg-end">
-                    <div  style="color: white;">Not SEBI Registered</div>
-                    <!-- <a class="link-dark text-decoration-none" href="#!">Terms of Use</a> -->
-                </div>
-            </div>
-        </div>
-    </footer>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        function composeGmail() {
-            // Retrieve form values
-            var name = document.getElementsByName('name')[0].value;
-            var email = document.getElementsByName('email')[0].value;
-            var message = document.getElementsByName('message')[0].value;
-            var subject = name;
-    
-            // Create the mailto link with parameters
-            var mailtoLink = `mailto:stealthwealth.help@gmail.com?subject=${encodeURIComponent(subject)}&body=Name: ${encodeURIComponent(name)}%0AEmail: ${encodeURIComponent(email)}%0AMessage: ${encodeURIComponent(message)}`;
-    
-            // Open the link
-            window.location.href = mailtoLink;
-        }
-    </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/scripts.js"></script>
-    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+<!-- MONTHLY HEATMAP -->
+<section id="monthly">
+  <div class="container">
+    <div class="section-label">03 — Monthly Heatmap</div>
+    <h2 class="section-title">50 of 52 months positive</h2>
+    <p class="section-desc">96.2% monthly win rate. Both negative months in the first year of the strategy's live run.</p>
+    <div class="heatmap-wrapper fade-in">
+      <div class="heatmap" id="heatmap-grid">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+    <div class="hm-legend">
+      <span>Negative</span>
+      <div class="hm-legend-swatch" style="background:#251010"></div>
+      <div class="hm-legend-swatch" style="background:#0d2318"></div>
+      <div class="hm-legend-swatch" style="background:#123422"></div>
+      <div class="hm-legend-swatch" style="background:#1a4b2e"></div>
+      <span>High positive</span>
+    </div>
+  </div>
+</section>
+
+<!-- RISK RATIOS -->
+<section id="ratios">
+  <div class="container">
+    <div class="section-label">04 — Risk-Adjusted Performance</div>
+    <h2 class="section-title">The numbers that matter</h2>
+    <p class="section-desc">Raw returns are the story. Risk-adjusted ratios are the integrity check.</p>
+    <div class="ratios-grid fade-in">
+      <div class="ratio-cell">
+        <div class="ratio-name">Sharpe Ratio</div>
+        <div class="ratio-value">5.14</div>
+        <div class="ratio-benchmark">Benchmark: &gt;3.0 = world-class</div>
+        <div class="ratio-verdict">▲ WORLD-CLASS</div>
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="100"></div></div>
+      </div>
+      <div class="ratio-cell">
+        <div class="ratio-name">Sortino Ratio</div>
+        <div class="ratio-value">12.23</div>
+        <div class="ratio-benchmark">Benchmark: &gt;5.0 = world-class</div>
+        <div class="ratio-verdict">▲ WORLD-CLASS</div>
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="100"></div></div>
+      </div>
+      <div class="ratio-cell">
+        <div class="ratio-name">Calmar Ratio</div>
+        <div class="ratio-value">8.84</div>
+        <div class="ratio-benchmark">Benchmark: &gt;5.0 = world-class</div>
+        <div class="ratio-verdict">▲ WORLD-CLASS</div>
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="88"></div></div>
+      </div>
+      <div class="ratio-cell">
+        <div class="ratio-name">Max Drawdown</div>
+        <div class="ratio-value">12.23%</div>
+        <div class="ratio-benchmark">Peak to trough: 8 days</div>
+        <div class="ratio-verdict">▲ RECOVERED IN 4 DAYS</div>
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="15"></div></div>
+      </div>
+      <div class="ratio-cell">
+        <div class="ratio-name">₹ per ₹1 Max DD</div>
+        <div class="ratio-value">117×</div>
+        <div class="ratio-benchmark">Return earned per ₹1 of drawdown</div>
+        <div class="ratio-verdict">▲ EXCEPTIONAL</div>
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="100"></div></div>
+      </div>
+      <div class="ratio-cell">
+        <div class="ratio-name">Win Rate</div>
+        <div class="ratio-value">53.6%</div>
+        <div class="ratio-benchmark">Across 1,785 trades</div>
+        <div class="ratio-verdict">▲ EDGE IS CONSISTENT</div>
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="54"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DRAWDOWN -->
+<section id="drawdown">
+  <div class="container">
+    <div class="section-label">05 — Drawdown Analysis</div>
+    <h2 class="section-title">The worst it got</h2>
+    <p class="section-desc">Maximum drawdown across the full 4.3 year period. Transparency requires showing the lows, not just the highs.</p>
+    <div class="dd-grid fade-in">
+      <div class="dd-big">
+        <div>
+          <div class="dd-big-label">Worst single period</div>
+          <div class="dd-big-value">−12.23%</div>
+          <div class="dd-big-note">₹16,456 · March 2022</div>
+        </div>
+        <div style="margin-top:24px">
+          <div class="dd-big-label">Max consecutive losing days</div>
+          <div class="dd-big-value" style="font-size:40px">6</div>
+          <div class="dd-big-note">Total loss: ₹22,946 (Jul–Aug 2025)</div>
+        </div>
+      </div>
+      <div class="dd-episodes">
+        <div class="dd-ep-title">Top 3 Drawdown Episodes</div>
+        <div class="dd-ep-row">
+          <div class="dd-ep-rank">#1</div>
+          <div class="dd-ep-dates">02 Mar – 10 Mar 2022</div>
+          <div class="dd-ep-pct">−12.23%</div>
+          <div class="dd-ep-recovery">4d recovery</div>
+        </div>
+        <div class="dd-ep-row">
+          <div class="dd-ep-rank">#2</div>
+          <div class="dd-ep-dates">18 Aug – 22 Sep 2022</div>
+          <div class="dd-ep-pct">−7.99%</div>
+          <div class="dd-ep-recovery">77d recovery</div>
+        </div>
+        <div class="dd-ep-row">
+          <div class="dd-ep-rank">#3</div>
+          <div class="dd-ep-dates">11 Sep – 15 Sep 2023</div>
+          <div class="dd-ep-pct">−6.17%</div>
+          <div class="dd-ep-recovery">34d recovery</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Negative periods breakdown -->
+    <table class="period-table fade-in">
+      <thead>
+        <tr>
+          <th>Granularity</th>
+          <th>Total Periods</th>
+          <th>Negative</th>
+          <th>Negative %</th>
+          <th>Reading</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Years</td><td>5</td><td>0</td>
+          <td class="pos-big">0.0%</td>
+          <td style="color:var(--text2);font-size:12px">No year ended in loss</td>
+        </tr>
+        <tr>
+          <td>Months</td><td>52</td><td>2</td>
+          <td class="pos-big">3.8%</td>
+          <td style="color:var(--text2);font-size:12px">Both in early 2022</td>
+        </tr>
+        <tr>
+          <td>Weeks</td><td>226</td><td>59</td>
+          <td style="color:var(--text)">26.1%</td>
+          <td style="color:var(--text2);font-size:12px">Normal for intraday</td>
+        </tr>
+        <tr>
+          <td>Days</td><td>~588</td><td>~212</td>
+          <td style="color:var(--text)">~36.1%</td>
+          <td style="color:var(--text2);font-size:12px">Edge compounds at month/year</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SYSTEM -->
+<section id="system">
+  <div class="container">
+    <div class="section-label">06 — The System</div>
+    <h2 class="section-title">What it does and why</h2>
+    <p class="section-desc">High-level architecture. The formula stays private. The thinking is here.</p>
+    <div class="system-cols">
+      <div>
+        <div class="system-block">
+          <div class="system-block-title">Core Mechanism</div>
+          <div class="system-block-text">
+            The system uses an adaptive Supertrend indicator — a volatility-normalised trend filter 
+            that adjusts its sensitivity to market conditions dynamically. Unlike a fixed-parameter 
+            trend follower, it recalibrates how aggressively it tracks price based on recent 
+            volatility. This allows it to stay in trending moves longer while tightening during 
+            choppy regimes.
+          </div>
+        </div>
+        <div class="system-block" style="margin-top:36px">
+          <div class="system-block-title">Stoploss Logic</div>
+          <div class="system-block-text">
+            A layered stoploss structure sits on top of the trend signal. It is not a fixed 
+            percentage — it is a function of recent price behaviour. The result is that 
+            position exits on losing trades happen faster in high-volatility environments, 
+            limiting the worst daily losses to under ₹15K even when markets moved aggressively.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="system-block">
+          <div class="system-block-title">Instrument Selection</div>
+          <div class="system-block-text">
+            Dixon Technologies and BSE Ltd were selected for their trending behaviour, 
+            liquidity, and distinct sector characteristics — one a capital goods story, 
+            one a financial infrastructure play. A 50/50 capital split across instruments 
+            reduces single-stock concentration without introducing correlation drag.
+          </div>
+        </div>
+        <div class="system-spec" style="margin-top:36px">
+          <div class="spec-row">
+            <span class="spec-key">Type</span>
+            <span class="spec-val">Intraday trend-following</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Instruments</span>
+            <span class="spec-val">Dixon Tech + BSE Ltd (NSE)</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Capital per slot</span>
+            <span class="spec-val">₹50,000 · 5× leverage</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Avg trades/day</span>
+            <span class="spec-val">~3 across both instruments</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Fees (total)</span>
+            <span class="spec-val">₹3,42,355 (15.1% of gross)</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Min capital required</span>
+            <span class="spec-val highlight">₹1,03,656 (exact historical floor)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAVEATS -->
+<section id="caveats">
+  <div class="container">
+    <div class="section-label">07 — What This Is Not</div>
+    <h2 class="section-title">Read this before drawing conclusions</h2>
+    <p class="section-desc">The numbers are honest. So are the limitations.</p>
+    <div class="caveat-box fade-in">
+      <div class="caveat-title">Honest caveats</div>
+      <ul class="caveat-list">
+        <li>This is a backtest, not a live trading record. Past performance in simulated conditions does not guarantee future results in live markets.</li>
+        <li>Slippage is not modelled. In a real intraday environment, entry and exit prices may differ from the signal price — particularly in volatile periods. Fees are fully accounted for, but market impact is not.</li>
+        <li>Dixon Technologies and BSE Ltd exhibited strong trending behaviour over this period. A different instrument set or a mean-reverting market regime may produce materially different results.</li>
+        <li>The 5× leverage used here amplifies both gains and losses. Capital adequacy calculations show a floor of ₹1,03,656 — but margin calls in live markets can happen faster than historical data suggests.</li>
+        <li>This is not SEBI registered investment advice. The system is published to document a methodology and showcase algorithmic thinking — not to solicit capital or clients.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        THE 2% SYSTEM<br>
+        Adaptive Supertrend + Stoploss · NSE Equities<br>
+        Backtest period: Feb 2022 – May 2026
+      </div>
+      <div class="footer-right">
+        <div class="footer-not-sebi">NOT SEBI REGISTERED</div>
+        This is not investment advice.<br>
+        github: the2percent
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── EQUITY CURVE DATA ──
+// Cumulative equity built from year-wise and month-wise data
+// All values in rupees above starting capital of 100000
+const months = [
+  {y:'2022',m:'Feb',pnl:34349},{y:'2022',m:'Mar',pnl:23963},{y:'2022',m:'Apr',pnl:14427},
+  {y:'2022',m:'May',pnl:43864},{y:'2022',m:'Jun',pnl:17966},{y:'2022',m:'Jul',pnl:18261},
+  {y:'2022',m:'Aug',pnl:-5093},{y:'2022',m:'Sep',pnl:5956},{y:'2022',m:'Oct',pnl:-7997},
+  {y:'2022',m:'Nov',pnl:4636},{y:'2022',m:'Dec',pnl:19538},
+  {y:'2023',m:'Jan',pnl:36186},{y:'2023',m:'Feb',pnl:14950},{y:'2023',m:'Mar',pnl:5547},
+  {y:'2023',m:'Apr',pnl:12780},{y:'2023',m:'May',pnl:41599},{y:'2023',m:'Jun',pnl:21796},
+  {y:'2023',m:'Jul',pnl:15508},{y:'2023',m:'Aug',pnl:26867},{y:'2023',m:'Sep',pnl:33223},
+  {y:'2023',m:'Oct',pnl:1417},{y:'2023',m:'Nov',pnl:37088},{y:'2023',m:'Dec',pnl:26663},
+  {y:'2024',m:'Jan',pnl:885},{y:'2024',m:'Feb',pnl:30980},{y:'2024',m:'Mar',pnl:56939},
+  {y:'2024',m:'Apr',pnl:17363},{y:'2024',m:'May',pnl:21267},{y:'2024',m:'Jun',pnl:63785},
+  {y:'2024',m:'Jul',pnl:55209},{y:'2024',m:'Aug',pnl:26700},{y:'2024',m:'Sep',pnl:97037},
+  {y:'2024',m:'Oct',pnl:117000},{y:'2024',m:'Nov',pnl:8860},{y:'2024',m:'Dec',pnl:37962},
+  {y:'2025',m:'Jan',pnl:95558},{y:'2025',m:'Feb',pnl:114646},{y:'2025',m:'Mar',pnl:90071},
+  {y:'2025',m:'Apr',pnl:63960},{y:'2025',m:'May',pnl:59407},{y:'2025',m:'Jun',pnl:25073},
+  {y:'2025',m:'Jul',pnl:27325},{y:'2025',m:'Aug',pnl:34689},{y:'2025',m:'Sep',pnl:47160},
+  {y:'2025',m:'Oct',pnl:61507},{y:'2025',m:'Nov',pnl:40104},{y:'2025',m:'Dec',pnl:62798},
+  {y:'2026',m:'Jan',pnl:33467},{y:'2026',m:'Feb',pnl:55442},{y:'2026',m:'Mar',pnl:72393},
+  {y:'2026',m:'Apr',pnl:26865},{y:'2026',m:'May',pnl:41935}
+];
+
+// Build cumulative equity array
+let cumulative = 100000;
+const equityPoints = [{x:0, val:100000}];
+months.forEach((m,i) => {
+  cumulative += m.pnl;
+  equityPoints.push({x: i+1, val: cumulative, label:`${m.m} ${m.y}`, pnl:m.pnl});
+});
+
+// Draw equity curve
+function drawCurve() {
+  const svg = document.getElementById('equity-svg');
+  const W = 1100, H = 320;
+  const PAD_L = 60, PAD_R = 20, PAD_T = 20, PAD_B = 30;
+  const plotW = W - PAD_L - PAD_R;
+  const plotH = H - PAD_T - PAD_B;
+
+  const minVal = 80000;
+  const maxVal = 2100000;
+
+  const xScale = i => PAD_L + (i / (equityPoints.length-1)) * plotW;
+  const yScale = v => PAD_T + plotH - ((v - minVal) / (maxVal - minVal)) * plotH;
+
+  // Build path
+  let pathD = '';
+  let areaD = '';
+  equityPoints.forEach((pt, i) => {
+    const x = xScale(i), y = yScale(pt.val);
+    if(i===0) { pathD += `M${x},${y}`; areaD += `M${x},${H-PAD_B} L${x},${y}`; }
+    else { pathD += ` L${x},${y}`; areaD += ` L${x},${y}`; }
+  });
+  const lastX = xScale(equityPoints.length-1);
+  areaD += ` L${lastX},${H-PAD_B} Z`;
+
+  document.getElementById('curve-line').setAttribute('d', pathD);
+  document.getElementById('curve-area').setAttribute('d', areaD);
+
+  // Animate draw
+  const pathEl = document.getElementById('curve-line');
+  const len = pathEl.getTotalLength();
+  pathEl.style.strokeDasharray = len;
+  pathEl.style.strokeDashoffset = len;
+  pathEl.style.transition = 'stroke-dashoffset 3s cubic-bezier(0.4,0,0.2,1)';
+
+  const obs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting) {
+      pathEl.style.strokeDashoffset = 0;
+      obs.disconnect();
+    }
+  }, {threshold:0.3});
+  obs.observe(document.getElementById('curve-container'));
+}
+
+// ── MONTHLY HEATMAP ──
+function buildHeatmap() {
+  const grid = document.getElementById('heatmap-grid');
+  const months_order = ['Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
+  const month_labels = ['Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
+  const years = ['2022','2023','2024','2025','2026'];
+
+  // Map data
+  const dataMap = {};
+  months.forEach(m => { dataMap[`${m.y}-${m.m}`] = m.pnl; });
+
+  // Headers
+  grid.innerHTML = '';
+  const cornerEl = document.createElement('div');
+  grid.appendChild(cornerEl);
+  month_labels.forEach(ml => {
+    const h = document.createElement('div');
+    h.className = 'hm-header';
+    h.textContent = ml;
+    grid.appendChild(h);
+  });
+
+  // Find max pnl for intensity
+  const allPos = months.filter(m=>m.pnl>0).map(m=>m.pnl);
+  const maxPnl = Math.max(...allPos);
+
+  years.forEach(yr => {
+    const yl = document.createElement('div');
+    yl.className = 'hm-year-label';
+    yl.textContent = yr;
+    grid.appendChild(yl);
+
+    months_order.forEach(mn => {
+      const cell = document.createElement('div');
+      cell.className = 'hm-cell';
+      const key = `${yr}-${mn}`;
+      const val = dataMap[key];
+
+      if(val === undefined) {
+        cell.classList.add('empty');
+      } else if(val < 0) {
+        cell.classList.add('neg');
+        cell.textContent = (val/1000).toFixed(0)+'k';
+      } else {
+        cell.classList.add('pos');
+        const intensity = Math.ceil((val/maxPnl)*5);
+        cell.dataset.intensity = Math.min(intensity,5);
+        cell.textContent = (val/1000).toFixed(0)+'k';
+      }
+
+      cell.title = val !== undefined ? `${mn} ${yr}: ₹${val.toLocaleString('en-IN')}` : 'No data';
+      grid.appendChild(cell);
+    });
+  });
+}
+
+// ── SCROLL ANIMATIONS ──
+function initScrollAnimations() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        e.target.classList.add('visible');
+
+        // Trigger bar animations
+        e.target.querySelectorAll('.year-bar-fill[data-w]').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 200);
+        });
+        e.target.querySelectorAll('.ratio-bar-fill[data-w]').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 300);
+        });
+      }
+    });
+  }, {threshold: 0.1});
+
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  drawCurve();
+  buildHeatmap();
+  initScrollAnimations();
+});
+</script>
 </body>
-
 </html>
