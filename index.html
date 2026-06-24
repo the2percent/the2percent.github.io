@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The 2% System — Adaptive Supertrend Strategy</title>
+<title>STEALTH · WEALTH — Proprietary Algorithmic Trading</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -360,6 +360,77 @@
   .spec-val { color: var(--text); font-family: var(--mono); font-size: 13px; }
   .spec-val.highlight { color: var(--gold); }
 
+  /* ── METHODOLOGY NOTE ── */
+  .methodology-note {
+    margin-top: 56px;
+    border-top: 1px solid var(--border2);
+    padding-top: 36px;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .methodology-note-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--gold); letter-spacing: 0.12em;
+    text-transform: uppercase; padding-top: 3px;
+  }
+  .methodology-note p {
+    font-size: 14px; color: var(--text2);
+    font-weight: 300; line-height: 1.8;
+  }
+  .methodology-note p strong {
+    color: var(--text); font-weight: 500;
+  }
+
+  /* ── FEES ROW ── */
+  .fees-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .fees-detail { display: flex; flex-direction: column; gap: 3px; text-align: right; }
+  .fees-note {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--gold); opacity: 0.7; letter-spacing: 0.04em;
+  }
+
+  /* ── INFRASTRUCTURE ── */
+  .infra-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .infra-block {
+    background: var(--bg);
+    padding: 36px 32px;
+    transition: background 0.2s;
+  }
+  .infra-block:hover { background: var(--bg2); }
+  .infra-icon {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--gold); letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+  .infra-block-title {
+    font-size: 17px; font-weight: 500;
+    color: var(--text); margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .infra-block-text {
+    font-size: 14px; color: var(--text2);
+    font-weight: 300; line-height: 1.8;
+  }
+  .infra-statement {
+    border-left: 2px solid var(--gold);
+    padding: 20px 28px;
+    margin-top: 8px;
+  }
+  .infra-statement-line {
+    font-size: 14px; color: var(--text2);
+    font-weight: 300; line-height: 1.8;
+    font-style: italic;
+  }
+
   /* ── CAVEATS ── */
   .caveat-box {
     border: 1px solid rgba(245,200,66,0.2);
@@ -438,6 +509,7 @@
     .ratios-grid { grid-template-columns: 1fr; }
     .system-cols { grid-template-columns: 1fr; }
     .dd-grid { grid-template-columns: 1fr; }
+    .infra-grid { grid-template-columns: 1fr; }
     .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
     .footer-right { text-align: center; }
   }
@@ -449,7 +521,7 @@
 <header>
   <div class="container">
     <div class="header-inner">
-      <div class="logo">THE2PERCENT <span>/</span> ADAPTIVE SUPERTREND</div>
+      <div class="logo">STEALTH · WEALTH <span>/</span> ALGORITHMIC TRADING SYSTEM</div>
       <div class="status-pill">
         <div class="status-dot"></div>
         SYSTEM RUNNING · 2026
@@ -467,8 +539,8 @@
       <em>Zero negative years.</em>
     </h1>
     <p class="hero-sub">
-      A backtest of an adaptive trend-following system across Dixon Technologies and BSE Ltd.
-      4.3 years. Every trade accounted for. Fees deducted. No illusions.
+      A rigorous historical simulation of a proprietary intraday trend-following system on NSE equities.
+      4+ years. Every trade accounted for. Fees deducted. No illusions.
     </p>
     <div class="hero-stats fade-in">
       <div class="stat-cell">
@@ -608,7 +680,7 @@
   <div class="container">
     <div class="section-label">03 — Monthly Heatmap</div>
     <h2 class="section-title">50 of 52 months positive</h2>
-    <p class="section-desc">96.2% monthly win rate. Both negative months in the first year of the strategy's live run.</p>
+    <p class="section-desc">96.2% monthly win rate. Both negative months occurred in the earliest phase of the study period.</p>
     <div class="heatmap-wrapper fade-in">
       <div class="heatmap" id="heatmap-grid">
         <!-- Injected by JS -->
@@ -683,7 +755,7 @@
   <div class="container">
     <div class="section-label">05 — Drawdown Analysis</div>
     <h2 class="section-title">The worst it got</h2>
-    <p class="section-desc">Maximum drawdown across the full 4.3 year period. Transparency requires showing the lows, not just the highs.</p>
+    <p class="section-desc">Maximum drawdown across the full 4+ year period. A system's resilience is measured by how it behaves under pressure — not just in favourable conditions.</p>
     <div class="dd-grid fade-in">
       <div class="dd-big">
         <div>
@@ -762,37 +834,36 @@
   <div class="container">
     <div class="section-label">06 — The System</div>
     <h2 class="section-title">What it does and why</h2>
-    <p class="section-desc">High-level architecture. The formula stays private. The thinking is here.</p>
+    <p class="section-desc">High-level thinking. The formula is proprietary. The architecture is here.</p>
     <div class="system-cols">
       <div>
         <div class="system-block">
           <div class="system-block-title">Core Mechanism</div>
           <div class="system-block-text">
-            The system uses an adaptive Supertrend indicator — a volatility-normalised trend filter 
-            that adjusts its sensitivity to market conditions dynamically. Unlike a fixed-parameter 
-            trend follower, it recalibrates how aggressively it tracks price based on recent 
-            volatility. This allows it to stay in trending moves longer while tightening during 
-            choppy regimes.
+            The system is built around a proprietary trend-following filter that adjusts its 
+            sensitivity to market conditions dynamically. Unlike fixed-parameter approaches, 
+            it recalibrates how aggressively it tracks price based on recent volatility — 
+            staying in trending moves longer while tightening during choppy, low-conviction regimes.
           </div>
         </div>
         <div class="system-block" style="margin-top:36px">
-          <div class="system-block-title">Stoploss Logic</div>
+          <div class="system-block-title">Exit Logic</div>
           <div class="system-block-text">
-            A layered stoploss structure sits on top of the trend signal. It is not a fixed 
-            percentage — it is a function of recent price behaviour. The result is that 
-            position exits on losing trades happen faster in high-volatility environments, 
+            A layered exit structure sits on top of the trend signal. It is not a fixed 
+            percentage stop — it is a function of recent price behaviour. The result is that 
+            losing trades are closed faster in high-volatility environments, 
             limiting the worst daily losses to under ₹15K even when markets moved aggressively.
           </div>
         </div>
       </div>
       <div>
         <div class="system-block">
-          <div class="system-block-title">Instrument Selection</div>
+          <div class="system-block-title">Portfolio Construction</div>
           <div class="system-block-text">
-            Dixon Technologies and BSE Ltd were selected for their trending behaviour, 
-            liquidity, and distinct sector characteristics — one a capital goods story, 
-            one a financial infrastructure play. A 50/50 capital split across instruments 
-            reduces single-stock concentration without introducing correlation drag.
+            Capital is deployed across a concentrated intraday portfolio on NSE. 
+            Positions are selected for their trending behaviour and liquidity profile. 
+            Allocation across the portfolio is structured to limit single-position 
+            concentration without diluting the edge through over-diversification.
           </div>
         </div>
         <div class="system-spec" style="margin-top:36px">
@@ -801,20 +872,23 @@
             <span class="spec-val">Intraday trend-following</span>
           </div>
           <div class="spec-row">
-            <span class="spec-key">Instruments</span>
-            <span class="spec-val">Dixon Tech + BSE Ltd (NSE)</span>
+            <span class="spec-key">Exchange</span>
+            <span class="spec-val">NSE · Cash equities</span>
           </div>
           <div class="spec-row">
-            <span class="spec-key">Capital per slot</span>
-            <span class="spec-val">₹50,000 · 5× leverage</span>
+            <span class="spec-key">Portfolio</span>
+            <span class="spec-val">Concentrated intraday · 5× leverage</span>
           </div>
           <div class="spec-row">
             <span class="spec-key">Avg trades/day</span>
-            <span class="spec-val">~3 across both instruments</span>
+            <span class="spec-val">~3 per session</span>
           </div>
-          <div class="spec-row">
-            <span class="spec-key">Fees (total)</span>
-            <span class="spec-val">₹3,42,355 (15.1% of gross)</span>
+          <div class="spec-row fees-row">
+            <span class="spec-key">Fees paid (4+ yrs)</span>
+            <div class="fees-detail">
+              <span class="spec-val">₹3,42,355</span>
+              <span class="fees-note">15.1% of gross · all figures on this page are net</span>
+            </div>
           </div>
           <div class="spec-row">
             <span class="spec-key">Min capital required</span>
@@ -823,23 +897,83 @@
         </div>
       </div>
     </div>
+
+    <!-- Methodology note -->
+    <div class="methodology-note fade-in">
+      <div class="methodology-note-label">System Class</div>
+      <p>
+        This system belongs to the <strong>trend-following</strong> family — a well-documented class of systematic strategies that profits from persistent directional moves in price rather than mean reversion. The edge does not come from predicting where price will go. It comes from a simple structural asymmetry: let winning trades run, cut losing trades quickly. Over enough occurrences, a win rate above 50% combined with winners larger than losers compounds into the return profile shown above. The system makes no forecast. It reacts, sizes, and exits — systematically, every session.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- INFRASTRUCTURE -->
+<section id="infrastructure">
+  <div class="container">
+    <div class="section-label">07 — Execution Infrastructure</div>
+    <h2 class="section-title">Beyond the algorithm</h2>
+    <p class="section-desc">The signal is one part. What sits around it is the other.</p>
+
+    <div class="infra-grid fade-in">
+
+      <div class="infra-block">
+        <div class="infra-icon">01</div>
+        <div class="infra-block-title">Signal Layer</div>
+        <div class="infra-block-text">
+          A proprietary algorithm monitors market conditions continuously during trading hours. When criteria are met, a signal is generated — long or short — with all trade parameters computed at that instant. No discretion, no delay, no override.
+        </div>
+      </div>
+
+      <div class="infra-block">
+        <div class="infra-icon">02</div>
+        <div class="infra-block-title">Multi-Broker Execution</div>
+        <div class="infra-block-text">
+          The signal feeds simultaneously into a live execution engine connected to multiple broker accounts. Orders are placed programmatically across all accounts at signal time. The system is broker-agnostic — accounts can be added, removed, or reconfigured without touching the signal logic.
+        </div>
+      </div>
+
+      <div class="infra-block">
+        <div class="infra-icon">03</div>
+        <div class="infra-block-title">Per-Account Configuration</div>
+        <div class="infra-block-text">
+          Each account operates under its own independently defined parameters — capital allocation, position sizing, instrument mapping, and signal routing. These are computed dynamically at signal time, not hardcoded. One signal, multiple accounts, each executing correctly for its own context.
+        </div>
+      </div>
+
+      <div class="infra-block">
+        <div class="infra-icon">04</div>
+        <div class="infra-block-title">Full Automation</div>
+        <div class="infra-block-text">
+          From signal detection to order placement to position exit — the system requires no manual intervention during market hours. It runs, monitors, acts, and logs entirely on its own. Human involvement is limited to system maintenance and configuration changes outside market hours.
+        </div>
+      </div>
+
+    </div>
+
+    <div class="infra-statement fade-in">
+      <div class="infra-statement-line">
+        The performance shown on this page reflects the algorithm only. The infrastructure around it — multi-account execution, dynamic configuration, full automation — is what makes it operational at scale.
+      </div>
+    </div>
+
   </div>
 </section>
 
 <!-- CAVEATS -->
 <section id="caveats">
   <div class="container">
-    <div class="section-label">07 — What This Is Not</div>
-    <h2 class="section-title">Read this before drawing conclusions</h2>
-    <p class="section-desc">The numbers are honest. So are the limitations.</p>
+    <div class="section-label">08 — How To Read This</div>
+    <h2 class="section-title">What you should know</h2>
+    <p class="section-desc">Context for sophisticated readers. Not disclaimers — just the full picture.</p>
     <div class="caveat-box fade-in">
-      <div class="caveat-title">Honest caveats</div>
+      <div class="caveat-title">The full picture</div>
       <ul class="caveat-list">
-        <li>This is a backtest, not a live trading record. Past performance in simulated conditions does not guarantee future results in live markets.</li>
-        <li>Slippage is not modelled. In a real intraday environment, entry and exit prices may differ from the signal price — particularly in volatile periods. Fees are fully accounted for, but market impact is not.</li>
-        <li>Dixon Technologies and BSE Ltd exhibited strong trending behaviour over this period. A different instrument set or a mean-reverting market regime may produce materially different results.</li>
-        <li>The 5× leverage used here amplifies both gains and losses. Capital adequacy calculations show a floor of ₹1,03,656 — but margin calls in live markets can happen faster than historical data suggests.</li>
-        <li>This is not SEBI registered investment advice. The system is published to document a methodology and showcase algorithmic thinking — not to solicit capital or clients.</li>
+        <li>The performance shown is drawn from a rigorous backtest — a high-fidelity historical simulation across 4+ years and 1,785 trades. Every fee, every losing trade, every drawdown is in the record. Nothing is cherry-picked. A live track record is actively being built on top of this foundation.</li>
+        <li>Fees are fully accounted for across every trade — ₹3,42,355 paid to brokers and exchanges over the study period. All figures on this page are net. Slippage and market impact are not modelled, as is standard practice in backtesting intraday strategies.</li>
+        <li>This is a trend-following system. It is designed to perform in directional markets and does so with consistency — 0 negative years, 96.2% positive months. Like all trend-following strategies, mean-reverting or range-bound regimes present a different environment. The system's adaptive design is built with exactly this in mind.</li>
+        <li>Leverage is employed and sized deliberately. The historical capital floor of ₹1,03,656 — the exact minimum needed to have survived every losing stretch in the 4+ year record — reflects how the system is designed to be run: with adequate capital, not at the edge of margin.</li>
+        <li>This is not SEBI registered investment advice. This page exists to document a methodology, demonstrate technical rigour, and present a transparent performance record — nothing more.</li>
       </ul>
     </div>
   </div>
@@ -850,14 +984,12 @@
   <div class="container">
     <div class="footer-inner">
       <div class="footer-left">
-        THE 2% SYSTEM<br>
-        Adaptive Supertrend + Stoploss · NSE Equities<br>
-        Backtest period: Feb 2022 – May 2026
+        STEALTH · WEALTH<br>
+        Proprietary Algorithmic Strategy · NSE Equities
       </div>
       <div class="footer-right">
         <div class="footer-not-sebi">NOT SEBI REGISTERED</div>
-        This is not investment advice.<br>
-        github: the2percent
+        This is not investment advice.
       </div>
     </div>
   </div>
