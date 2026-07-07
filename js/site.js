@@ -17,19 +17,76 @@
   }
 
   function initNav() {
+    // Desktop nav
     const nav = document.querySelector('.main-nav');
-    if (!nav) return;
-
-    const page = currentPage();
-    NAV_ITEMS.forEach(function (item) {
-      const link = document.createElement('a');
-      link.href = item.href;
-      link.textContent = item.label;
-      const isActive = item.match.some(function (m) {
-        return m === page || (m === '/' && (page === 'index.html' || page === ''));
+    if (nav) {
+      const page = currentPage();
+      NAV_ITEMS.forEach(function (item) {
+        const link = document.createElement('a');
+        link.href = item.href;
+        link.textContent = item.label;
+        const isActive = item.match.some(function (m) {
+          return m === page || (m === '/' && (page === 'index.html' || page === ''));
+        });
+        if (isActive) link.classList.add('active');
+        nav.appendChild(link);
       });
-      if (isActive) link.classList.add('active');
-      nav.appendChild(link);
+    }
+
+    // Bottom sheet nav links
+    const sheetNav = document.querySelector('.sheet-nav');
+    if (sheetNav) {
+      const page = currentPage();
+      NAV_ITEMS.forEach(function (item) {
+        const link = document.createElement('a');
+        link.href = item.href;
+        link.textContent = item.label;
+        const isActive = item.match.some(function (m) {
+          return m === page || (m === '/' && (page === 'index.html' || page === ''));
+        });
+        if (isActive) link.classList.add('active');
+        sheetNav.appendChild(link);
+      });
+    }
+  }
+
+  function initMobileNav() {
+    var toggle = document.querySelector('.nav-toggle');
+    var sheet = document.querySelector('.bottom-sheet');
+    var backdrop = document.querySelector('.nav-backdrop');
+    if (!toggle || !sheet) return;
+
+    function setOpen(open) {
+      sheet.classList.toggle('is-open', open);
+      document.body.classList.toggle('nav-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      if (backdrop) {
+        backdrop.classList.toggle('is-open', open);
+      }
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!sheet.classList.contains('is-open'));
+    });
+
+    if (backdrop) {
+      backdrop.addEventListener('click', function () { setOpen(false); });
+    }
+
+    // Close on link click
+    sheet.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () { setOpen(false); });
+    });
+
+    // Close on escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setOpen(false);
+    });
+
+    // Close on resize to desktop
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 768) setOpen(false);
     });
   }
 
@@ -55,6 +112,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     initNav();
+    initMobileNav();
     initScrollAnimations();
   });
 })();

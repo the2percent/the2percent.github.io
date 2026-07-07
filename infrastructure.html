@@ -14,15 +14,28 @@
 <header>
   <div class="container">
     <div class="header-top">
-      <a href="index.html" class="logo">STEALTH · WEALTH <span>/</span> ALGORITHMIC TRADING SYSTEM</a>
-      <div class="status-pill">
-        <div class="status-dot"></div>
-        SYSTEM RUNNING · 2026
+      <a href="index.html" class="logo">STEALTH · WEALTH <span>/</span> <span class="logo-ext">ALGORITHMIC TRADING SYSTEM</span></a>
+      <div class="header-actions">
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          SYSTEM RUNNING · 2026
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
-    <nav class="main-nav"></nav>
+    <nav class="main-nav" id="main-nav"></nav>
   </div>
 </header>
+<div class="nav-backdrop" aria-hidden="true"></div>
+<div class="bottom-sheet" role="dialog" aria-label="Navigation">
+  <div class="sheet-handle"></div>
+  <div class="sheet-label">STEALTH · WEALTH</div>
+  <nav class="sheet-nav"></nav>
+</div>
 
 <main>
 <section class="page-hero">
