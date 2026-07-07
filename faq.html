@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — STEALTH · WEALTH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-top">
+      <a href="index.html" class="logo">STEALTH · WEALTH <span>/</span> ALGORITHMIC TRADING SYSTEM</a>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        SYSTEM RUNNING · 2026
+      </div>
+    </div>
+    <nav class="main-nav"></nav>
+  </div>
+</header>
+
+<main>
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-eyebrow">FAQ</div>
+    <h1 class="hero-title">Plain-language answers</h1>
+    <p class="hero-sub">No jargon required. Common questions about what this system is, how the numbers work, and what they mean for you.</p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="container">
+    <div class="faq-list fade-in">
+      <div class="faq-item">
+        <div class="faq-q">What is this website?</div>
+        <div class="faq-a">This is a transparent performance record for a proprietary algorithmic trading system that trades NSE equities intraday. It exists to document the system's historical results — wins, losses, fees, and all — not to sell you anything or give investment advice.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What does "algorithmic trading" mean?</div>
+        <div class="faq-a">It means a computer program decides when to buy and sell, based on rules written into the system. There is no human picking stocks or timing entries during market hours. The system runs automatically every trading session.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Are these real returns?</div>
+        <div class="faq-a">The historical record (2022–May 2026) comes from a rigorous historical simulation — built on real market data and real fee structures. Every trade, fee, and loss is accounted for. A live track record is being built on top of this foundation and published on the <a href="live-record.html" style="color:var(--gold)">Live Record</a> page.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is a backtest?</div>
+        <div class="faq-a">A backtest runs a trading strategy against historical market data to see how it would have performed. It is the standard way to evaluate systematic strategies before risking real capital. It is not a guarantee of future results — markets change — but it is an honest way to show what a system did in the past.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Are fees included in the numbers?</div>
+        <div class="faq-a">Yes. ₹3,42,355 in broker and exchange fees were paid over the study period. Every return, PnL figure, and ratio on the <a href="performance.html" style="color:var(--gold)">Performance</a> page is net of fees. See the <a href="methodology.html" style="color:var(--gold)">Methodology</a> page for full details.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is a drawdown?</div>
+        <div class="faq-a">A drawdown is the peak-to-trough decline in account value before it recovers. The worst drawdown in this record was 12.23% — meaning the account fell 12.23% from its highest point before climbing back. It recovered in 4 days. Drawdowns are normal; what matters is how deep they go and how fast the system recovers.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is CAGR?</div>
+        <div class="faq-a">CAGR stands for Compound Annual Growth Rate — the annualised return if the account had grown at a steady rate each year. It is a standard way to compare performance across different time periods. This system's CAGR is 108.1%, meaning it grew at the equivalent of 108.1% per year over the 4+ year study period, calculated on a fixed ₹1L capital base.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the Sharpe ratio?</div>
+        <div class="faq-a">The Sharpe ratio measures return relative to the total risk taken — specifically, the volatility of returns. A Sharpe above 1.0 is good, above 2.0 is excellent, and above 3.0 is considered world-class. This system's Sharpe is 5.14, meaning it generated exceptional returns relative to the swings in its equity curve.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the Sortino ratio?</div>
+        <div class="faq-a">The Sortino ratio is similar to the Sharpe ratio but only penalises downside volatility — the bad swings — rather than all volatility. It is a more precise measure of risk-adjusted performance because upside variance is not a problem worth penalising. A Sortino above 5.0 is world-class. This system's Sortino is 12.23, indicating the downside was very well controlled relative to the returns generated.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the Calmar ratio?</div>
+        <div class="faq-a">The Calmar ratio divides the annualised return by the maximum drawdown. It answers: how much return did you get per unit of your worst loss? A Calmar above 3.0 is excellent, above 5.0 is world-class. This system's Calmar is 8.84 — meaning for every 1% of maximum drawdown experienced, the system generated 8.84% of annualised return.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the MAR ratio?</div>
+        <div class="faq-a">The MAR ratio is the total return divided by the maximum drawdown — a cumulative version of the Calmar ratio. This system's MAR is 157.74, meaning the total return generated was 157 times the worst drawdown experienced. It is an exceptional number that reflects both the scale of the returns and the shallowness of the drawdowns.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the Pain ratio?</div>
+        <div class="faq-a">The Pain ratio measures return relative to the average drawdown depth over the entire period — not just the worst one. It captures the ongoing "pain" of living through the equity curve, not just the single worst episode. A Pain ratio above 1.0 means you earned more than you suffered. This system's Pain ratio is 1.87×.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What does "₹ earned per ₹1 of max drawdown" mean?</div>
+        <div class="faq-a">This is a plain-language version of the MAR ratio. It asks: for every rupee you lost at your worst point, how many rupees did you ultimately earn? This system earned ₹117 for every ₹1 of maximum drawdown — meaning the drawdowns were small relative to the returns, and the recoveries were swift.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is win rate and why is 53.6% considered an edge?</div>
+        <div class="faq-a">Win rate is the percentage of trades that close in profit. 53.6% means slightly more than half of all trades are winners. This might sound modest, but in systematic trend-following, win rate alone does not determine profitability — what matters is the combination of win rate and the average size of winners versus losers. This system wins slightly more than half its trades and lets those winners run, which compounds into the return profile shown on the Performance page.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why does it use leverage?</div>
+        <div class="faq-a">Intraday trading on NSE allows up to 5× leverage on cash equities. The system uses this to deploy meaningful position sizes on a ₹1L capital base. Leverage amplifies both gains and losses — which is why the minimum capital floor (₹1,03,656) matters. Running with insufficient capital increases the risk of a margin call during a drawdown.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I invest in this?</div>
+        <div class="faq-a">This site does not offer investment products or advice. It is not SEBI registered. The purpose is documentation and transparency — to show what the system has done, not to solicit capital. Any decision to replicate or follow this approach is entirely your own.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Will it keep performing like this?</div>
+        <div class="faq-a">Past performance does not guarantee future results. Markets change, liquidity shifts, and regimes that favour trend-following can give way to range-bound periods. The system is designed to adapt, but no systematic strategy performs equally in all conditions. The full record — including losing months, losing weeks, and drawdowns — is published so you can judge for yourself.</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        STEALTH · WEALTH<br>
+        Proprietary Algorithmic Strategy · NSE Equities
+      </div>
+      <div class="footer-right">
+        <div class="footer-not-sebi">NOT SEBI REGISTERED</div>
+        This is not investment advice.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>

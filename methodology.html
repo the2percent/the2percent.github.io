@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodology — STEALTH · WEALTH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-top">
+      <a href="index.html" class="logo">STEALTH · WEALTH <span>/</span> ALGORITHMIC TRADING SYSTEM</a>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        SYSTEM RUNNING · 2026
+      </div>
+    </div>
+    <nav class="main-nav"></nav>
+  </div>
+</header>
+
+<main>
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-eyebrow">Methodology</div>
+    <h1 class="hero-title">What is included and excluded</h1>
+    <p class="hero-sub">How the numbers on this site are calculated, what costs are deducted, and what assumptions the record is built on.</p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="container">
+    <div class="section-label">Included in reporting</div>
+    <h2 class="section-title">What the numbers reflect</h2>
+    <p class="section-desc">Every figure published on the Performance page is net of the items below.</p>
+
+    <ul class="method-list fade-in">
+      <li>
+        <div class="method-list-label">All trades</div>
+        <div class="method-list-text">Every executed trade in the study period — 1,785 total — is included. No trades are omitted, filtered, or cherry-picked from the record.</div>
+      </li>
+      <li>
+        <div class="method-list-label">Brokerage fees</div>
+        <div class="method-list-text">₹3,42,355 in total fees paid to brokers and exchanges over 4+ years (15.1% of gross PnL). All published returns are net of these costs.</div>
+      </li>
+      <li>
+        <div class="method-list-label">Losing trades</div>
+        <div class="method-list-text">All losing trades, losing days, losing weeks, and drawdown episodes are included. The max drawdown of 12.23% and all recovery periods are part of the public record.</div>
+      </li>
+      <li>
+        <div class="method-list-label">Fixed capital</div>
+        <div class="method-list-text">Returns are calculated on a fixed ₹1L base capital. Position sizing does not compound with accumulated profits — this is a conservative reporting mode that understates what compounding would produce.</div>
+      </li>
+      <li>
+        <div class="method-list-label">Calendar periods</div>
+        <div class="method-list-text">Annual and monthly returns use calendar boundaries. A year ends on 31 December regardless of when the study started within that year.</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="container">
+    <div class="section-label">Excluded from reporting</div>
+    <h2 class="section-title">What is not modelled</h2>
+    <p class="section-desc">Standard backtesting limitations. These are disclosed so readers can interpret the record accurately.</p>
+
+    <ul class="method-list fade-in">
+      <li>
+        <div class="method-list-label">Slippage</div>
+        <div class="method-list-text">Market impact and slippage are not modelled. Fills are assumed at the prices recorded in the simulation. Live execution may differ, particularly during fast-moving sessions.</div>
+      </li>
+      <li>
+        <div class="method-list-label">Taxes</div>
+        <div class="method-list-text">No tax on gains is deducted. Actual after-tax returns depend on individual tax treatment and are not represented here.</div>
+      </li>
+      <li>
+        <div class="method-list-label">Compounding</div>
+        <div class="method-list-text">Position size does not increase with accumulated equity. Returns shown assume the same capital base throughout — a deliberate conservative choice.</div>
+      </li>
+      <li>
+        <div class="method-list-label">Survivorship</div>
+        <div class="method-list-text">The instrument universe is not survivorship-bias-free in the strict academic sense. The system trades liquid NSE equities available at each point in the study period.</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="container">
+    <div class="section-label">Capital requirements</div>
+    <h2 class="section-title">Minimum capital floor</h2>
+    <p class="section-desc">The historical minimum capital needed to have survived every losing stretch in the 4+ year record.</p>
+
+    <div class="system-spec fade-in" style="max-width:640px">
+      <div class="spec-row">
+        <span class="spec-key">Historical floor</span>
+        <span class="spec-val highlight">₹1,03,656</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Base capital assumed</span>
+        <span class="spec-val">₹1,00,000</span>
+      </div>
+      <div class="spec-row fees-row">
+        <span class="spec-key">Total fees (4+ yrs)</span>
+        <div class="fees-detail">
+          <span class="spec-val">₹3,42,355</span>
+          <span class="fees-note">15.1% of gross · all figures net</span>
+        </div>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Leverage</span>
+        <span class="spec-val">5× intraday</span>
+      </div>
+    </div>
+
+    <div class="methodology-note fade-in">
+      <div class="methodology-note-label">Reading</div>
+      <p>
+        The ₹1,03,656 floor is the exact minimum capital required to have survived the worst drawdown episode without a margin call. Running below this level introduces risk that is not reflected in the published return profile. The system is designed to be run with adequate capital, not at the edge of margin.
+      </p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        STEALTH · WEALTH<br>
+        Proprietary Algorithmic Strategy · NSE Equities
+      </div>
+      <div class="footer-right">
+        <div class="footer-not-sebi">NOT SEBI REGISTERED</div>
+        This is not investment advice.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+</body>
+</html>
