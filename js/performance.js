@@ -662,16 +662,21 @@
   function updateToggleUI() {
     var lblOn  = document.getElementById('lbl-on');
     var lblOff = document.getElementById('lbl-off');
-    var desc   = document.getElementById('toggle-desc');
+    var pill   = document.getElementById('slip-pill');
+    var toggle = document.getElementById('slip-toggle');
     var costBar = document.getElementById('slip-cost-bar');
 
     if (lblOn)  lblOn.classList.toggle('active', withSlip);
     if (lblOff) lblOff.classList.toggle('active', !withSlip);
 
-    if (desc) {
-      desc.textContent = withSlip
-        ? 'Showing: with slippage (5.81 bps per order · realistic execution)'
-        : 'Showing: without slippage (theoretical baseline · reference prices)';
+    if (toggle) {
+      toggle.checked = !withSlip;
+      toggle.setAttribute('aria-checked', withSlip ? 'false' : 'true');
+    }
+    if (pill) {
+      pill.title = withSlip
+        ? 'With slippage — 5.81 bps per order · realistic execution'
+        : 'Without slippage — theoretical baseline · reference prices';
     }
     if (costBar) {
       costBar.style.display = withSlip ? '' : 'none';

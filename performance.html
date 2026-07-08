@@ -9,36 +9,64 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
 <style>
-  /* ── SLIPPAGE TOGGLE ── */
-  .toggle-bar {
+  /* ── SLIPPAGE FLOATING PILL ── */
+  .slip-pill {
+    position: fixed;
+    z-index: 200;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    background: var(--bg2);
+    gap: 10px;
+    padding: 10px 12px 10px 14px;
+    background: rgba(12, 12, 14, 0.92);
     border: 1px solid var(--border2);
-    padding: 14px 20px;
-    margin-bottom: 48px;
-    flex-wrap: wrap;
+    border-radius: 999px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.25s, box-shadow 0.25s;
   }
-  .toggle-bar-left { display: flex; flex-direction: column; gap: 3px; }
-  .toggle-bar-label {
-    font-family: var(--mono); font-size: 10px;
-    color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase;
+  .slip-pill:focus-within {
+    border-color: rgba(245, 200, 66, 0.35);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(245, 200, 66, 0.12) inset;
   }
-  .toggle-bar-desc {
-    font-family: var(--mono); font-size: 11px; color: var(--text2);
+  body.nav-open .slip-pill { opacity: 0; pointer-events: none; }
+  .slip-pill-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
-  .toggle-switch-wrap {
-    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  .slip-pill-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border2);
+    flex-shrink: 0;
+  }
+  .slip-pill-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
   }
   .toggle-option {
-    font-family: var(--mono); font-size: 11px;
-    color: var(--text3); letter-spacing: 0.06em; transition: color 0.2s;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+    white-space: nowrap;
   }
   .toggle-option.active { color: var(--gold); }
   .toggle-switch {
-    position: relative; width: 44px; height: 24px; cursor: pointer;
+    position: relative;
+    width: 44px;
+    height: 24px;
+    cursor: pointer;
+    flex-shrink: 0;
   }
   .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
   .toggle-track {
@@ -60,6 +88,20 @@
   }
   .toggle-switch input:checked ~ .toggle-thumb {
     transform: translateX(20px); background: var(--gold);
+  }
+  @media (max-width: 480px) {
+    .slip-pill-label { display: none; }
+    .slip-pill-divider { display: none; }
+    .slip-pill { padding: 10px 12px; gap: 8px; }
+  }
+  /* reserve space so the pill never covers footer notes */
+  footer {
+    padding-bottom: calc(48px + 72px + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 769px) {
+    footer .footer-right {
+      padding-right: 220px;
+    }
   }
   /* slippage cost bar */
   .slip-cost-bar {
@@ -137,22 +179,6 @@
   <div class="container">
     <div class="section-label">Overview</div>
     <h2 class="section-title">Key metrics</h2>
-
-    <div class="toggle-bar">
-      <div class="toggle-bar-left">
-        <div class="toggle-bar-label">Slippage assumption</div>
-        <div class="toggle-bar-desc" id="toggle-desc">Showing: with slippage (5.81 bps per order · realistic execution)</div>
-      </div>
-      <div class="toggle-switch-wrap">
-        <span class="toggle-option active" id="lbl-on">WITH SLIPPAGE</span>
-        <label class="toggle-switch" title="Toggle slippage">
-          <input type="checkbox" id="slip-toggle">
-          <div class="toggle-track"></div>
-          <div class="toggle-thumb"></div>
-        </label>
-        <span class="toggle-option" id="lbl-off">WITHOUT</span>
-      </div>
-    </div>
 
     <div class="hero-stats fade-in">
       <div class="stat-cell">
@@ -308,6 +334,20 @@
     </div>
   </div>
 </footer>
+
+<div class="slip-pill" id="slip-pill" role="group" aria-label="Slippage assumption">
+  <span class="slip-pill-label">Slippage</span>
+  <span class="slip-pill-divider" aria-hidden="true"></span>
+  <div class="slip-pill-options">
+    <span class="toggle-option active" id="lbl-on">WITH</span>
+    <label class="toggle-switch" title="Toggle slippage assumption">
+      <input type="checkbox" id="slip-toggle" role="switch" aria-checked="false" aria-labelledby="lbl-on lbl-off">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
+    <span class="toggle-option" id="lbl-off">WITHOUT</span>
+  </div>
+</div>
 
 <script src="js/site.js"></script>
 <script src="js/performance.js"></script>
