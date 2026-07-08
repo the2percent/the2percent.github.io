@@ -83,6 +83,20 @@
   .slip-cost-val { font-family: var(--mono); font-size: 16px; color: var(--text); }
   .slip-cost-val.red { color: var(--red); }
   .slip-cost-val.gold { color: var(--gold); }
+
+  /* odometer roll — tabular nums prevent layout jitter */
+  .roll-num,
+  .stat-value,
+  .slip-cost-val,
+  .curve-annotation[id^="ya"],
+  #curve-title,
+  #hm-title,
+  .hm-cell:not(.empty):not(.hm-header):not(.hm-year-label) {
+    font-variant-numeric: tabular-nums;
+  }
+  .is-rolling {
+    transition: color 0.25s ease;
+  }
 </style>
 </head>
 <body>

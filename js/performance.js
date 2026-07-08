@@ -114,52 +114,287 @@
 
   // ── STATE ──────────────────────────────────────────────────────────────────
   var withSlip = true;
+  var prevData = null;
 
   function current() { return withSlip ? DATA.slip : DATA.noslip; }
 
+  // ── ODOMETER ROLL ──────────────────────────────────────────────────────────
+
+  var ROLL_MS = 900;
+  var rollRafs = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
+  var rollIds = {};
+
+  function countDecimals(s) {
+    var m = String(s).match(/\.(\d+)/);
+    return m ? m[1].length : 0;
+  }
+
+  function parseDisplayValue(str) {
+    if (str == null || typeof str !== 'string') return null;
+    str = str.trim();
+    if (str.charAt(0) === '−' && str.indexOf('%') === str.length - 1) {
+      return { value: -parseFloat(str.slice(1, -1)), kind: 'negpct', decimals: countDecimals(str.slice(1, -1)) };
+    }
+    if (str.charAt(0) === '~' && str.indexOf('%') === str.length - 1) {
+      return { value: parseFloat(str.slice(1, -1)), kind: 'tildepct', decimals: countDecimals(str.slice(1, -1)) };
+    }
+    if (str.charAt(str.length - 1) === '%') {
+      return { value: parseFloat(str), kind: 'pct', decimals: countDecimals(str) };
+    }
+    if (str.charAt(str.length - 1) === '×') {
+      return { value: parseFloat(str), kind: 'mult', decimals: countDecimals(str) };
+    }
+    if (str.charAt(0) === '₹' && str.charAt(str.length - 1) === 'L') {
+      return { value: parseFloat(str.slice(1, -1)), kind: 'lakhs', decimals: countDecimals(str.slice(1, -1)) };
+    }
+    if (str.charAt(0) === '₹') {
+      return { value: parseFloat(str.slice(1).replace(/,/g, '')), kind: 'inr', decimals: 0 };
+    }
+    if (str.charAt(str.length - 1) === 'k') {
+      return { value: parseFloat(str), kind: 'k', decimals: 0 };
+    }
+    if (str.indexOf('Win rate ') === 0) {
+      return { value: parseFloat(str.slice(9)), kind: 'winrate', decimals: countDecimals(str.slice(9)) };
+    }
+    if (str.charAt(0) === '~') {
+      return { value: parseFloat(str.slice(1).replace(/,/g, '')), kind: 'tildeint', decimals: 0 };
+    }
+    if (/^[\d,]+$/.test(str)) {
+      return { value: parseFloat(str.replace(/,/g, '')), kind: 'int', decimals: 0 };
+    }
+    if (/^-?[\d.]+$/.test(str)) {
+      return { value: parseFloat(str), kind: 'num', decimals: countDecimals(str) };
+    }
+    return null;
+  }
+
+  function formatDisplayValue(meta, value) {
+    var d = meta.decimals;
+    var v = value;
+    switch (meta.kind) {
+      case 'negpct':   return '−' + Math.abs(v).toFixed(d) + '%';
+      case 'tildepct': return '~' + v.toFixed(d) + '%';
+      case 'pct':      return v.toFixed(d) + '%';
+      case 'mult':     return v.toFixed(d) + '×';
+      case 'lakhs':    return '₹' + v.toFixed(d) + 'L';
+      case 'inr':      return '₹' + Math.round(v).toLocaleString('en-IN');
+      case 'k':        return Math.round(v) + 'k';
+      case 'winrate':  return 'Win rate ' + v.toFixed(d) + '%';
+      case 'tildeint': return '~' + Math.round(v).toLocaleString('en-IN');
+      case 'int':      return Math.round(v).toLocaleString('en-IN');
+      case 'num':      return v.toFixed(d);
+      default:         return String(value);
+    }
+  }
+
+  function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function cancelRoll(el) {
+    if (rollRafs) {
+      var raf = rollRafs.get(el);
+      if (raf) cancelAnimationFrame(raf);
+    } else if (el.id && rollIds[el.id]) {
+      cancelAnimationFrame(rollIds[el.id]);
+      delete rollIds[el.id];
+    }
+  }
+
+  function rollFromTo(el, fromText, toText, duration) {
+    if (!el || fromText === toText) {
+      if (el) {
+        el.textContent = toText;
+        el.dataset.rollValue = toText;
+      }
+      return;
+    }
+    duration = duration || ROLL_MS;
+    var fromMeta = parseDisplayValue(fromText);
+    var toMeta = parseDisplayValue(toText);
+    if (!fromMeta || !toMeta || fromMeta.kind !== toMeta.kind) {
+      el.textContent = toText;
+      el.dataset.rollValue = toText;
+      return;
+    }
+    cancelRoll(el);
+    el.textContent = fromText;
+    el.dataset.rollValue = fromText;
+    el.classList.add('is-rolling');
+    var maxDec = Math.max(fromMeta.decimals, toMeta.decimals);
+    var meta = { kind: fromMeta.kind, decimals: maxDec };
+    var start = null;
+    function tick(ts) {
+      if (!start) start = ts;
+      var t = Math.min(1, (ts - start) / duration);
+      var cur = fromMeta.value + (toMeta.value - fromMeta.value) * easeOutExpo(t);
+      el.textContent = formatDisplayValue(meta, cur);
+      if (t < 1) {
+        var raf = requestAnimationFrame(tick);
+        if (rollRafs) rollRafs.set(el, raf);
+        else if (el.id) rollIds[el.id] = raf;
+      } else {
+        el.textContent = toText;
+        el.dataset.rollValue = toText;
+        el.classList.remove('is-rolling');
+        if (rollRafs) rollRafs.delete(el);
+        else if (el.id) delete rollIds[el.id];
+      }
+    }
+    var raf0 = requestAnimationFrame(tick);
+    if (rollRafs) rollRafs.set(el, raf0);
+    else if (el.id) rollIds[el.id] = raf0;
+  }
+
+  function rollText(el, newText, duration) {
+    if (!el) return;
+    rollFromTo(el, el.dataset.rollValue || el.textContent, newText, duration);
+  }
+
+  function rollLakhInTitle(el, fromTitle, toTitle, duration) {
+    if (!el) return;
+    var oldM = fromTitle.match(/₹([\d.]+)L$/);
+    var newM = toTitle.match(/₹([\d.]+)L$/);
+    if (!oldM || !newM) {
+      el.textContent = toTitle;
+      return;
+    }
+    var prefix = toTitle.replace(/₹[\d.]+L$/, '');
+    var from = parseFloat(oldM[1]);
+    var to = parseFloat(newM[1]);
+    var dec = Math.max(countDecimals(oldM[1]), countDecimals(newM[1]));
+    cancelRoll(el);
+    el.classList.add('is-rolling');
+    var start = null;
+    duration = duration || ROLL_MS;
+    function tick(ts) {
+      if (!start) start = ts;
+      var t = Math.min(1, (ts - start) / duration);
+      var cur = from + (to - from) * easeOutExpo(t);
+      el.textContent = prefix + '₹' + cur.toFixed(dec) + 'L';
+      if (t < 1) {
+        var raf = requestAnimationFrame(tick);
+        if (rollRafs) rollRafs.set(el, raf);
+        else if (el.id) rollIds[el.id] = raf;
+      } else {
+        el.textContent = toTitle;
+        el.classList.remove('is-rolling');
+        if (rollRafs) rollRafs.delete(el);
+        else if (el.id) delete rollIds[el.id];
+      }
+    }
+    var raf0 = requestAnimationFrame(tick);
+    if (rollRafs) rollRafs.set(el, raf0);
+    else if (el.id) rollIds[el.id] = raf0;
+  }
+
+  function rollHmTitle(el, fromTitle, toTitle, duration) {
+    if (!el) return;
+    var oldM = fromTitle.match(/^(\d+) of (\d+) months/);
+    var newM = toTitle.match(/^(\d+) of (\d+) months/);
+    if (!oldM || !newM) {
+      el.textContent = toTitle;
+      return;
+    }
+    var suffix = ' of ' + newM[2] + ' months positive';
+    var from = parseInt(oldM[1], 10);
+    var to = parseInt(newM[1], 10);
+    cancelRoll(el);
+    el.classList.add('is-rolling');
+    var start = null;
+    duration = duration || ROLL_MS;
+    function tick(ts) {
+      if (!start) start = ts;
+      var t = Math.min(1, (ts - start) / duration);
+      var cur = Math.round(from + (to - from) * easeOutExpo(t));
+      el.textContent = cur + suffix;
+      if (t < 1) {
+        var raf = requestAnimationFrame(tick);
+        if (rollRafs) rollRafs.set(el, raf);
+        else if (el.id) rollIds[el.id] = raf;
+      } else {
+        el.textContent = toTitle;
+        el.classList.remove('is-rolling');
+        if (rollRafs) rollRafs.delete(el);
+        else if (el.id) delete rollIds[el.id];
+      }
+    }
+    var raf0 = requestAnimationFrame(tick);
+    if (rollRafs) rollRafs.set(el, raf0);
+    else if (el.id) rollIds[el.id] = raf0;
+  }
+
+  function rollBar(el, fromW, toW, duration) {
+    if (!el) return;
+    duration = duration || ROLL_MS;
+    el.style.transition = 'none';
+    el.style.width = fromW + '%';
+    el.offsetHeight;
+    el.style.transition = 'width ' + duration + 'ms cubic-bezier(0.16, 1, 0.3, 1)';
+    el.style.width = toW + '%';
+  }
+
   // ── RENDER HELPERS ─────────────────────────────────────────────────────────
 
-  function setText(id, val) {
+  function setText(id, val, animate) {
     var el = document.getElementById(id);
-    if (el) el.textContent = val;
+    if (!el) return;
+    if (animate && prevData) rollText(el, val);
+    else {
+      el.textContent = val;
+      el.dataset.rollValue = val;
+    }
   }
 
-  function renderHeroStats(d) {
-    setText('s-pnl',    d.pnl);
-    setText('s-cagr',   d.cagr);
-    setText('s-dd',     d.dd);
-    setText('s-dd-sub', d.ddSub);
-    setText('s-sharpe', d.sharpe);
+  function renderHeroStats(d, animate) {
+    setText('s-pnl',    d.pnl,    animate);
+    setText('s-cagr',   d.cagr,   animate);
+    setText('s-dd',     d.dd,     animate);
+    setText('s-dd-sub', d.ddSub,  false);
+    setText('s-sharpe', d.sharpe, animate);
   }
 
-  function renderYears(d) {
+  function renderYears(d, animate) {
     var grid = document.getElementById('year-grid');
     if (!grid) return;
+    var oldYears = animate && prevData ? prevData.years : null;
     grid.innerHTML = '';
-    d.years.forEach(function (y) {
+    d.years.forEach(function (y, idx) {
       var card = document.createElement('div');
       card.className = 'year-card';
       var label = y.yr + ' · ' + y.trades + ' trades' + (y.note ? ' (' + y.note + ')' : '');
       card.innerHTML =
         '<div class="year-label">' + label + '</div>' +
-        '<div class="year-return">' + y.ret + '</div>' +
-        '<div class="year-pnl">' + y.pnl + '</div>' +
+        '<div class="year-return roll-num">' + y.ret + '</div>' +
+        '<div class="year-pnl roll-num">' + y.pnl + '</div>' +
         '<div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="' + y.bar + '"></div></div>' +
-        '<div class="year-meta"><span>Win rate ' + y.winr + '</span></div>';
+        '<div class="year-meta"><span class="roll-num">' + 'Win rate ' + y.winr + '</span></div>';
       grid.appendChild(card);
+
+      if (oldYears && oldYears[idx]) {
+        var oy = oldYears[idx];
+        rollFromTo(card.querySelector('.year-return'), oy.ret, y.ret);
+        rollFromTo(card.querySelector('.year-pnl'), oy.pnl, y.pnl);
+        rollFromTo(card.querySelector('.year-meta span'), 'Win rate ' + oy.winr, 'Win rate ' + y.winr);
+      }
     });
-    // animate bars
     setTimeout(function () {
-      grid.querySelectorAll('.year-bar-fill[data-w]').forEach(function (bar) {
-        bar.style.transition = 'width 1.2s cubic-bezier(0.4,0,0.2,1)';
-        bar.style.width = bar.dataset.w + '%';
+      grid.querySelectorAll('.year-bar-fill[data-w]').forEach(function (bar, idx) {
+        var toW = parseFloat(bar.dataset.w);
+        if (oldYears && oldYears[idx]) {
+          rollBar(bar, oldYears[idx].bar, toW, ROLL_MS);
+        } else {
+          bar.style.transition = 'width 1.2s cubic-bezier(0.4,0,0.2,1)';
+          bar.style.width = toW + '%';
+        }
       });
-    }, 100);
+    }, animate ? 0 : 100);
   }
 
-  function renderHeatmap(d) {
+  function renderHeatmap(d, animate) {
     var grid = document.getElementById('heatmap-grid');
     if (!grid) return;
+    var oldMonths = animate && prevData ? prevData.months : null;
     grid.innerHTML = '';
     var monthOrder = ['Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
     var years = ['2022','2023','2024','2025','2026'];
@@ -203,6 +438,12 @@
           cell.dataset.intensity = intensity;
           cell.textContent = Math.round(val/1000) + 'k';
         }
+        cell.dataset.key = key;
+        if (oldMonths && oldMonths[key] !== undefined && val !== undefined) {
+          var oldK = Math.round(oldMonths[key] / 1000) + 'k';
+          var newK = cell.textContent;
+          rollFromTo(cell, oldK, newK);
+        }
         cell.title = val !== undefined
           ? key + ': ₹' + Math.round(val).toLocaleString('en-IN')
           : 'No data';
@@ -210,73 +451,114 @@
       });
     });
 
-    setText('hm-title', d.hmTitle);
-    setText('hm-desc', d.hmDesc);
+    var hmTitleEl = document.getElementById('hm-title');
+    if (hmTitleEl) {
+      if (animate && prevData) rollHmTitle(hmTitleEl, prevData.hmTitle, d.hmTitle);
+      else {
+        hmTitleEl.textContent = d.hmTitle;
+      }
+    }
+    setText('hm-desc', d.hmDesc, false);
   }
 
-  function renderRatios(d) {
+  function renderRatios(d, animate) {
     var grid = document.getElementById('ratios-grid');
     if (!grid) return;
+    var oldRatios = animate && prevData ? prevData.ratios : null;
     grid.innerHTML = '';
-    d.ratios.forEach(function (r) {
+    d.ratios.forEach(function (r, idx) {
       var cell = document.createElement('div');
       cell.className = 'ratio-cell';
       cell.innerHTML =
         '<div class="ratio-name">' + r.name + '</div>' +
-        '<div class="ratio-value">' + r.val + '</div>' +
+        '<div class="ratio-value roll-num">' + r.val + '</div>' +
         '<div class="ratio-benchmark">' + r.bench + '</div>' +
         '<div class="ratio-verdict">' + r.verdict + '</div>' +
         '<div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="' + r.bar + '"></div></div>';
       grid.appendChild(cell);
+      if (oldRatios && oldRatios[idx]) {
+        rollFromTo(cell.querySelector('.ratio-value'), oldRatios[idx].val, r.val);
+      }
     });
     setTimeout(function () {
-      grid.querySelectorAll('.ratio-bar-fill[data-w]').forEach(function (bar) {
-        bar.style.transition = 'width 1.5s cubic-bezier(0.4,0,0.2,1)';
-        bar.style.width = bar.dataset.w + '%';
+      grid.querySelectorAll('.ratio-bar-fill[data-w]').forEach(function (bar, idx) {
+        var toW = parseFloat(bar.dataset.w);
+        if (oldRatios && oldRatios[idx]) {
+          rollBar(bar, oldRatios[idx].bar, toW, ROLL_MS);
+        } else {
+          bar.style.transition = 'width 1.5s cubic-bezier(0.4,0,0.2,1)';
+          bar.style.width = toW + '%';
+        }
       });
-    }, 100);
+    }, animate ? 0 : 100);
   }
 
-  function renderDrawdown(d) {
+  function renderDrawdown(d, animate) {
+    var old = animate && prevData ? prevData : null;
     var ddGrid = document.getElementById('dd-grid');
     if (ddGrid) {
       ddGrid.innerHTML =
         '<div class="dd-big">' +
           '<div>' +
             '<div class="dd-big-label">Worst single drawdown</div>' +
-            '<div class="dd-big-value">' + d.ddWorst + '</div>' +
+            '<div class="dd-big-value roll-num" id="dd-worst">' + d.ddWorst + '</div>' +
             '<div class="dd-big-note">' + d.ddWorstNote + '</div>' +
           '</div>' +
           '<div style="margin-top:24px">' +
             '<div class="dd-big-label">Max consecutive losing days</div>' +
-            '<div class="dd-big-value" style="font-size:40px">' + d.ddConsec + '</div>' +
+            '<div class="dd-big-value roll-num" id="dd-consec" style="font-size:40px">' + d.ddConsec + '</div>' +
             '<div class="dd-big-note">' + d.ddConsecNote + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="dd-episodes">' +
           '<div class="dd-ep-title">Top 3 Drawdown Episodes</div>' +
-          d.ddEpisodes.map(function (ep) {
+          d.ddEpisodes.map(function (ep, idx) {
             return '<div class="dd-ep-row">' +
               '<div class="dd-ep-rank">' + ep.rank + '</div>' +
               '<div class="dd-ep-dates">' + ep.dates + '</div>' +
-              '<div class="dd-ep-pct">' + ep.pct + '</div>' +
+              '<div class="dd-ep-pct roll-num" data-ep="' + idx + '">' + ep.pct + '</div>' +
               '<div class="dd-ep-recovery">' + ep.rec + '</div>' +
             '</div>';
           }).join('') +
         '</div>';
+
+      if (old) {
+        rollFromTo(document.getElementById('dd-worst'), old.ddWorst, d.ddWorst);
+        rollFromTo(document.getElementById('dd-consec'), old.ddConsec, d.ddConsec);
+        d.ddEpisodes.forEach(function (ep, idx) {
+          if (old.ddEpisodes[idx]) {
+            var epEl = ddGrid.querySelector('.dd-ep-pct[data-ep="' + idx + '"]');
+            rollFromTo(epEl, old.ddEpisodes[idx].pct, ep.pct);
+          }
+        });
+      } else {
+        var worstEl = document.getElementById('dd-worst');
+        var consecEl = document.getElementById('dd-consec');
+        if (worstEl) worstEl.dataset.rollValue = d.ddWorst;
+        if (consecEl) consecEl.dataset.rollValue = d.ddConsec;
+      }
     }
 
     var tbody = document.getElementById('period-tbody');
     if (tbody) {
-      tbody.innerHTML = d.periods.map(function (p) {
+      var oldPeriods = old ? old.periods : null;
+      tbody.innerHTML = d.periods.map(function (p, idx) {
         return '<tr>' +
           '<td>' + p.g + '</td>' +
           '<td>' + p.t + '</td>' +
-          '<td>' + p.n + '</td>' +
-          '<td class="' + p.cls + '">' + p.pct + '</td>' +
+          '<td class="roll-num" data-period-n="' + idx + '">' + p.n + '</td>' +
+          '<td class="' + p.cls + ' roll-num" data-period-pct="' + idx + '">' + p.pct + '</td>' +
           '<td style="color:var(--text2);font-size:12px">' + p.note + '</td>' +
         '</tr>';
       }).join('');
+      if (oldPeriods) {
+        d.periods.forEach(function (p, idx) {
+          if (oldPeriods[idx]) {
+            rollFromTo(tbody.querySelector('[data-period-n="' + idx + '"]'), oldPeriods[idx].n, p.n);
+            rollFromTo(tbody.querySelector('[data-period-pct="' + idx + '"]'), oldPeriods[idx].pct, p.pct);
+          }
+        });
+      }
     }
   }
 
@@ -295,7 +577,7 @@
     return pts;
   }
 
-  function drawCurve(d, animate) {
+  function drawCurve(d, animate, isToggle) {
     var pts = buildEquityPoints(d);
     var W = 1100, H = 310;
     var PAD_L = 60, PAD_R = 20, PAD_T = 20, PAD_B = 30;
@@ -323,19 +605,41 @@
     linePath.setAttribute('d', pathD);
     areaPath.setAttribute('d', areaD);
 
-    // Y axis labels
     var step = (maxVal - minVal) / 5;
+    var oldFinal = prevData ? prevData.finalEquity : null;
     for (var i = 1; i <= 5; i++) {
       var labelEl = document.getElementById('ya' + i);
       if (labelEl) {
         var rupees = Math.round((minVal + step * (5 - i + 1)) / 100000);
-        labelEl.textContent = '₹' + rupees + 'L';
+        var label = '₹' + rupees + 'L';
+        if (animate && oldFinal) {
+          var oldMax = oldFinal * 1.05;
+          var oldStep = (oldMax - minVal) / 5;
+          var oldRupees = Math.round((minVal + oldStep * (5 - i + 1)) / 100000);
+          rollFromTo(labelEl, '₹' + oldRupees + 'L', label);
+        } else {
+          labelEl.textContent = label;
+          labelEl.dataset.rollValue = label;
+        }
       }
     }
 
-    setText('curve-title', d.curveTitle);
+    var titleEl = document.getElementById('curve-title');
+    if (titleEl) {
+      if (animate && prevData) rollLakhInTitle(titleEl, prevData.curveTitle, d.curveTitle);
+      else titleEl.textContent = d.curveTitle;
+    }
 
-    if (animate) {
+    if (isToggle) {
+      linePath.style.transition = 'opacity 0.35s ease';
+      linePath.style.opacity = '0.55';
+      areaPath.style.transition = 'opacity 0.35s ease';
+      areaPath.style.opacity = '0.55';
+      setTimeout(function () {
+        linePath.style.opacity = '1';
+        areaPath.style.opacity = '1';
+      }, 180);
+    } else if (animate) {
       var len = linePath.getTotalLength();
       linePath.style.strokeDasharray = len;
       linePath.style.strokeDashoffset = len;
@@ -348,6 +652,8 @@
       linePath.style.strokeDasharray = '';
       linePath.style.strokeDashoffset = '';
       linePath.style.transition = 'none';
+      linePath.style.opacity = '1';
+      areaPath.style.opacity = '1';
     }
   }
 
@@ -374,13 +680,14 @@
 
   function renderAll(animate) {
     var d = current();
-    renderHeroStats(d);
-    renderYears(d);
-    renderHeatmap(d);
-    renderRatios(d);
-    renderDrawdown(d);
-    drawCurve(d, animate);
+    renderHeroStats(d, animate);
+    renderYears(d, animate);
+    renderHeatmap(d, animate);
+    renderRatios(d, animate);
+    renderDrawdown(d, animate);
+    drawCurve(d, animate, animate);
     updateToggleUI();
+    prevData = d;
   }
 
   // ── SCROLL ANIMATION FOR CURVE ─────────────────────────────────────────────
@@ -391,7 +698,7 @@
     var obs = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting && !curveDrawn) {
         curveDrawn = true;
-        drawCurve(current(), true);
+        drawCurve(current(), true, false);
         obs.disconnect();
       }
     }, { threshold: 0.3 });
@@ -408,8 +715,7 @@
     if (toggle) {
       toggle.addEventListener('change', function () {
         withSlip = !this.checked;
-        renderAll(false);
-        drawCurve(current(), true);
+        renderAll(true);
       });
     }
   });
