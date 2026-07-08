@@ -8,6 +8,82 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
+<style>
+  /* ── SLIPPAGE TOGGLE ── */
+  .toggle-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    padding: 14px 20px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+  .toggle-bar-left { display: flex; flex-direction: column; gap: 3px; }
+  .toggle-bar-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .toggle-bar-desc {
+    font-family: var(--mono); font-size: 11px; color: var(--text2);
+  }
+  .toggle-switch-wrap {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .toggle-option {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text3); letter-spacing: 0.06em; transition: color 0.2s;
+  }
+  .toggle-option.active { color: var(--gold); }
+  .toggle-switch {
+    position: relative; width: 44px; height: 24px; cursor: pointer;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle-track {
+    position: absolute; inset: 0;
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-track {
+    background: rgba(245,200,66,0.12);
+    border-color: rgba(245,200,66,0.4);
+  }
+  .toggle-thumb {
+    position: absolute; top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: var(--text3); border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .toggle-switch input:checked ~ .toggle-thumb {
+    transform: translateX(20px); background: var(--gold);
+  }
+  /* slippage cost bar */
+  .slip-cost-bar {
+    margin-top: 48px;
+    border: 1px solid rgba(245,200,66,0.15);
+    background: rgba(245,200,66,0.02);
+    padding: 20px 24px;
+    display: flex; gap: 0; flex-wrap: wrap;
+  }
+  .slip-cost-item {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 8px 24px; border-right: 1px solid var(--border);
+    flex: 1; min-width: 120px;
+  }
+  .slip-cost-item:first-child { padding-left: 0; }
+  .slip-cost-item:last-child { border-right: none; }
+  .slip-cost-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .slip-cost-val { font-family: var(--mono); font-size: 16px; color: var(--text); }
+  .slip-cost-val.red { color: var(--red); }
+  .slip-cost-val.gold { color: var(--gold); }
+</style>
 </head>
 <body>
 
@@ -16,10 +92,7 @@
     <div class="header-top">
       <a href="index.html" class="logo">STEALTH · WEALTH <span>/</span> <span class="logo-ext">ALGORITHMIC TRADING SYSTEM</span></a>
       <div class="header-actions">
-        <div class="status-pill">
-          <div class="status-dot"></div>
-          SYSTEM RUNNING · 2026
-        </div>
+        <div class="status-pill"><div class="status-dot"></div>SYSTEM RUNNING · 2026</div>
         <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Open menu">
           <span class="nav-toggle-bar" aria-hidden="true"></span>
           <span class="nav-toggle-bar" aria-hidden="true"></span>
@@ -40,36 +113,108 @@
 <main>
 <section class="page-hero">
   <div class="container">
-    <div class="hero-eyebrow">Performance</div>
-    <h1 class="hero-title">Charts and aggregate numbers</h1>
-    <p class="hero-sub">The complete historical record — equity curve, annual returns, monthly breakdown, risk ratios, and drawdown analysis. All figures net of fees.</p>
+    <div class="hero-eyebrow">Performance · Feb 2022 – Jun 2026</div>
+    <h1 class="hero-title">The complete record</h1>
+    <p class="hero-sub">2,481 trades. 4+ years. All figures net of brokerage, exchange fees, and taxes. Default view includes realistic execution slippage of 5.81 bps per order — the conservative, honest baseline.</p>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="container">
+    <div class="section-label">Overview</div>
+    <h2 class="section-title">Key metrics</h2>
+
+    <div class="toggle-bar">
+      <div class="toggle-bar-left">
+        <div class="toggle-bar-label">Slippage assumption</div>
+        <div class="toggle-bar-desc" id="toggle-desc">Showing: with slippage (5.81 bps per order · realistic execution)</div>
+      </div>
+      <div class="toggle-switch-wrap">
+        <span class="toggle-option active" id="lbl-on">WITH SLIPPAGE</span>
+        <label class="toggle-switch" title="Toggle slippage">
+          <input type="checkbox" id="slip-toggle">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+        <span class="toggle-option" id="lbl-off">WITHOUT</span>
+      </div>
+    </div>
+
+    <div class="hero-stats fade-in">
+      <div class="stat-cell">
+        <div class="stat-label">Net PnL</div>
+        <div class="stat-value gold" id="s-pnl">₹14.7L</div>
+        <div class="stat-sub">on ₹1L base capital</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">CAGR</div>
+        <div class="stat-value" id="s-cagr">89.5%</div>
+        <div class="stat-sub">annualised return</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Max Drawdown</div>
+        <div class="stat-value" id="s-dd">11.95%</div>
+        <div class="stat-sub" id="s-dd-sub">82d peak→trough</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Sharpe Ratio</div>
+        <div class="stat-value green" id="s-sharpe">5.21</div>
+        <div class="stat-sub">world-class (&gt;3.0)</div>
+      </div>
+    </div>
+
+    <div class="slip-cost-bar fade-in" id="slip-cost-bar">
+      <div class="slip-cost-item">
+        <div class="slip-cost-label">Slippage cost (total)</div>
+        <div class="slip-cost-val red">₹6,47,226</div>
+      </div>
+      <div class="slip-cost-item">
+        <div class="slip-cost-label">Brokerage + taxes</div>
+        <div class="slip-cost-val red">₹4,77,029</div>
+      </div>
+      <div class="slip-cost-item">
+        <div class="slip-cost-label">Total execution cost</div>
+        <div class="slip-cost-val red">₹11,24,255</div>
+      </div>
+      <div class="slip-cost-item">
+        <div class="slip-cost-label">Slippage as % of gross</div>
+        <div class="slip-cost-val gold">24.92%</div>
+      </div>
+      <div class="slip-cost-item">
+        <div class="slip-cost-label">Avg per order</div>
+        <div class="slip-cost-val">₹130</div>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="equity">
   <div class="container">
     <div class="section-label">Equity Curve</div>
-    <h2 class="section-title">How ₹1L became ₹20.3L</h2>
-    <p class="section-desc">Cumulative equity across all 1,785 trades. Fixed capital mode — no compounding of position size.</p>
+    <h2 class="section-title" id="curve-title">How ₹1L became ₹15.7L</h2>
+    <p class="section-desc">Cumulative equity across 2,481 trades. Fixed capital mode — position size does not compound.</p>
     <div id="curve-container" class="fade-in">
       <svg id="equity-svg" viewBox="0 0 1100 340" preserveAspectRatio="none">
-        <line class="curve-grid" x1="0" y1="68" x2="1100" y2="68"/>
-        <line class="curve-grid" x1="0" y1="136" x2="1100" y2="136"/>
-        <line class="curve-grid" x1="0" y1="204" x2="1100" y2="204"/>
-        <line class="curve-grid" x1="0" y1="272" x2="1100" y2="272"/>
-        <line class="curve-grid" x1="220" y1="0" x2="220" y2="320" stroke-dasharray="4,4"/>
-        <line class="curve-grid" x1="440" y1="0" x2="440" y2="320" stroke-dasharray="4,4"/>
-        <line class="curve-grid" x1="660" y1="0" x2="660" y2="320" stroke-dasharray="4,4"/>
-        <line class="curve-grid" x1="880" y1="0" x2="880" y2="320" stroke-dasharray="4,4"/>
-        <text class="curve-annotation" x="110" y="310" text-anchor="middle">2022</text>
-        <text class="curve-annotation" x="330" y="310" text-anchor="middle">2023</text>
-        <text class="curve-annotation" x="550" y="310" text-anchor="middle">2024</text>
-        <text class="curve-annotation" x="770" y="310" text-anchor="middle">2025</text>
-        <text class="curve-annotation" x="990" y="310" text-anchor="middle">2026</text>
-        <text class="curve-annotation" x="8" y="72" text-anchor="start">₹20L</text>
-        <text class="curve-annotation" x="8" y="140" text-anchor="start">₹15L</text>
-        <text class="curve-annotation" x="8" y="208" text-anchor="start">₹10L</text>
-        <text class="curve-annotation" x="8" y="276" text-anchor="start">₹5L</text>
+        <line class="curve-grid" x1="0" y1="56"  x2="1100" y2="56"/>
+        <line class="curve-grid" x1="0" y1="112" x2="1100" y2="112"/>
+        <line class="curve-grid" x1="0" y1="168" x2="1100" y2="168"/>
+        <line class="curve-grid" x1="0" y1="224" x2="1100" y2="224"/>
+        <line class="curve-grid" x1="0" y1="280" x2="1100" y2="280"/>
+        <line class="curve-grid" x1="183" y1="0" x2="183" y2="310" stroke-dasharray="4,4"/>
+        <line class="curve-grid" x1="366" y1="0" x2="366" y2="310" stroke-dasharray="4,4"/>
+        <line class="curve-grid" x1="549" y1="0" x2="549" y2="310" stroke-dasharray="4,4"/>
+        <line class="curve-grid" x1="732" y1="0" x2="732" y2="310" stroke-dasharray="4,4"/>
+        <line class="curve-grid" x1="915" y1="0" x2="915" y2="310" stroke-dasharray="4,4"/>
+        <text class="curve-annotation" x="91"  y="326" text-anchor="middle">2022</text>
+        <text class="curve-annotation" x="274" y="326" text-anchor="middle">2023</text>
+        <text class="curve-annotation" x="457" y="326" text-anchor="middle">2024</text>
+        <text class="curve-annotation" x="640" y="326" text-anchor="middle">2025</text>
+        <text class="curve-annotation" x="823" y="326" text-anchor="middle">2026</text>
+        <text class="curve-annotation" id="ya1" x="55" y="60"  text-anchor="start"></text>
+        <text class="curve-annotation" id="ya2" x="55" y="116" text-anchor="start"></text>
+        <text class="curve-annotation" id="ya3" x="55" y="172" text-anchor="start"></text>
+        <text class="curve-annotation" id="ya4" x="55" y="228" text-anchor="start"></text>
+        <text class="curve-annotation" id="ya5" x="55" y="284" text-anchor="start"></text>
         <path id="curve-area" class="curve-fill" fill="url(#goldGrad)"/>
         <path id="curve-line" class="curve-path"/>
         <defs>
@@ -87,52 +232,16 @@
   <div class="container">
     <div class="section-label">Annual Performance</div>
     <h2 class="section-title">Year by year</h2>
-    <p class="section-desc">Five consecutive positive years. No calendar year ended in loss.</p>
-    <div class="year-grid fade-in">
-      <div class="year-card">
-        <div class="year-label">2022 · 241 trades</div>
-        <div class="year-return">169.9%</div>
-        <div class="year-pnl">₹1,69,870</div>
-        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="88"></div></div>
-        <div class="year-meta"><span>Win rate 47.3%</span><span>Fees 21.5%</span></div>
-      </div>
-      <div class="year-card">
-        <div class="year-label">2023 · 308 trades</div>
-        <div class="year-return">273.6%</div>
-        <div class="year-pnl">₹2,73,624</div>
-        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="95"></div></div>
-        <div class="year-meta"><span>Win rate 51.0%</span><span>Fees 17.8%</span></div>
-      </div>
-      <div class="year-card">
-        <div class="year-label">2024 · 475 trades</div>
-        <div class="year-return">534.0%</div>
-        <div class="year-pnl">₹5,33,989</div>
-        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="78"></div></div>
-        <div class="year-meta"><span>Win rate 51.2%</span><span>Fees 14.6%</span></div>
-      </div>
-      <div class="year-card">
-        <div class="year-label">2025 · 549 trades</div>
-        <div class="year-return">722.3%</div>
-        <div class="year-pnl">₹7,22,298</div>
-        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="100"></div></div>
-        <div class="year-meta"><span>Win rate 58.3%</span><span>Fees 12.7%</span></div>
-      </div>
-      <div class="year-card">
-        <div class="year-label">2026 · 212 trades (Jan–May)</div>
-        <div class="year-return">230.1%</div>
-        <div class="year-pnl">₹2,30,102</div>
-        <div class="year-bar-track"><div class="year-bar-fill" style="width:0%" data-w="32"></div></div>
-        <div class="year-meta"><span>Win rate 57.5%</span><span>Fees 15.0%</span></div>
-      </div>
-    </div>
+    <p class="section-desc">Five consecutive positive years — with or without slippage. Zero negative years in either scenario.</p>
+    <div class="year-grid fade-in" id="year-grid"></div>
   </div>
 </section>
 
 <section id="monthly">
   <div class="container">
     <div class="section-label">Monthly Heatmap</div>
-    <h2 class="section-title">50 of 52 months positive</h2>
-    <p class="section-desc">96.2% monthly win rate. Both negative months occurred in the earliest phase of the study period.</p>
+    <h2 class="section-title" id="hm-title">44 of 53 months positive</h2>
+    <p class="section-desc" id="hm-desc">83.0% monthly win rate with slippage. Toggle to see baseline.</p>
     <div class="heatmap-wrapper fade-in">
       <div class="heatmap" id="heatmap-grid"></div>
     </div>
@@ -152,50 +261,7 @@
     <div class="section-label">Risk-Adjusted Performance</div>
     <h2 class="section-title">The numbers that matter</h2>
     <p class="section-desc">Raw returns are the story. Risk-adjusted ratios are the integrity check.</p>
-    <div class="ratios-grid fade-in">
-      <div class="ratio-cell">
-        <div class="ratio-name">Sharpe Ratio</div>
-        <div class="ratio-value">5.14</div>
-        <div class="ratio-benchmark">Benchmark: &gt;3.0 = world-class</div>
-        <div class="ratio-verdict">▲ WORLD-CLASS</div>
-        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="100"></div></div>
-      </div>
-      <div class="ratio-cell">
-        <div class="ratio-name">Sortino Ratio</div>
-        <div class="ratio-value">12.23</div>
-        <div class="ratio-benchmark">Benchmark: &gt;5.0 = world-class</div>
-        <div class="ratio-verdict">▲ WORLD-CLASS</div>
-        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="100"></div></div>
-      </div>
-      <div class="ratio-cell">
-        <div class="ratio-name">Calmar Ratio</div>
-        <div class="ratio-value">8.84</div>
-        <div class="ratio-benchmark">Benchmark: &gt;5.0 = world-class</div>
-        <div class="ratio-verdict">▲ WORLD-CLASS</div>
-        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="88"></div></div>
-      </div>
-      <div class="ratio-cell">
-        <div class="ratio-name">Max Drawdown</div>
-        <div class="ratio-value">12.23%</div>
-        <div class="ratio-benchmark">Peak to trough: 8 days</div>
-        <div class="ratio-verdict">▲ RECOVERED IN 4 DAYS</div>
-        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="15"></div></div>
-      </div>
-      <div class="ratio-cell">
-        <div class="ratio-name">₹ per ₹1 Max DD</div>
-        <div class="ratio-value">117×</div>
-        <div class="ratio-benchmark">Return earned per ₹1 of drawdown</div>
-        <div class="ratio-verdict">▲ EXCEPTIONAL</div>
-        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="100"></div></div>
-      </div>
-      <div class="ratio-cell">
-        <div class="ratio-name">Win Rate</div>
-        <div class="ratio-value">53.6%</div>
-        <div class="ratio-benchmark">Across 1,785 trades</div>
-        <div class="ratio-verdict">▲ EDGE IS CONSISTENT</div>
-        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:0%" data-w="54"></div></div>
-      </div>
-    </div>
+    <div class="ratios-grid fade-in" id="ratios-grid"></div>
   </div>
 </section>
 
@@ -203,74 +269,15 @@
   <div class="container">
     <div class="section-label">Drawdown Analysis</div>
     <h2 class="section-title">The worst it got</h2>
-    <p class="section-desc">Maximum drawdown across the full 4+ year period. A system's resilience is measured by how it behaves under pressure — not just in favourable conditions.</p>
-    <div class="dd-grid fade-in">
-      <div class="dd-big">
-        <div>
-          <div class="dd-big-label">Worst single period</div>
-          <div class="dd-big-value">−12.23%</div>
-          <div class="dd-big-note">₹16,456 · March 2022</div>
-        </div>
-        <div style="margin-top:24px">
-          <div class="dd-big-label">Max consecutive losing days</div>
-          <div class="dd-big-value" style="font-size:40px">6</div>
-          <div class="dd-big-note">Total loss: ₹22,946 (Jul–Aug 2025)</div>
-        </div>
-      </div>
-      <div class="dd-episodes">
-        <div class="dd-ep-title">Top 3 Drawdown Episodes</div>
-        <div class="dd-ep-row">
-          <div class="dd-ep-rank">#1</div>
-          <div class="dd-ep-dates">02 Mar – 10 Mar 2022</div>
-          <div class="dd-ep-pct">−12.23%</div>
-          <div class="dd-ep-recovery">4d recovery</div>
-        </div>
-        <div class="dd-ep-row">
-          <div class="dd-ep-rank">#2</div>
-          <div class="dd-ep-dates">18 Aug – 22 Sep 2022</div>
-          <div class="dd-ep-pct">−7.99%</div>
-          <div class="dd-ep-recovery">77d recovery</div>
-        </div>
-        <div class="dd-ep-row">
-          <div class="dd-ep-rank">#3</div>
-          <div class="dd-ep-dates">11 Sep – 15 Sep 2023</div>
-          <div class="dd-ep-pct">−6.17%</div>
-          <div class="dd-ep-recovery">34d recovery</div>
-        </div>
-      </div>
-    </div>
+    <p class="section-desc">A system's resilience is measured by how it behaves under pressure — not just in favourable conditions.</p>
+    <div class="dd-grid fade-in" id="dd-grid"></div>
     <table class="period-table fade-in">
       <thead>
         <tr>
-          <th>Granularity</th>
-          <th>Total Periods</th>
-          <th>Negative</th>
-          <th>Negative %</th>
-          <th>Reading</th>
+          <th>Granularity</th><th>Total Periods</th><th>Negative</th><th>Negative %</th><th>Reading</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Years</td><td>5</td><td>0</td>
-          <td class="pos-big">0.0%</td>
-          <td style="color:var(--text2);font-size:12px">No year ended in loss</td>
-        </tr>
-        <tr>
-          <td>Months</td><td>52</td><td>2</td>
-          <td class="pos-big">3.8%</td>
-          <td style="color:var(--text2);font-size:12px">Both in early 2022</td>
-        </tr>
-        <tr>
-          <td>Weeks</td><td>226</td><td>59</td>
-          <td style="color:var(--text)">26.1%</td>
-          <td style="color:var(--text2);font-size:12px">Normal for intraday</td>
-        </tr>
-        <tr>
-          <td>Days</td><td>~588</td><td>~212</td>
-          <td style="color:var(--text)">~36.1%</td>
-          <td style="color:var(--text2);font-size:12px">Edge compounds at month/year</td>
-        </tr>
-      </tbody>
+      <tbody id="period-tbody"></tbody>
     </table>
   </div>
 </section>
@@ -279,10 +286,7 @@
 <footer>
   <div class="container">
     <div class="footer-inner">
-      <div class="footer-left">
-        STEALTH · WEALTH<br>
-        Proprietary Algorithmic Strategy · NSE Equities
-      </div>
+      <div class="footer-left">STEALTH · WEALTH<br>Proprietary Algorithmic Strategy · NSE Equities</div>
       <div class="footer-right">
         <div class="footer-not-sebi">NOT SEBI REGISTERED</div>
         This is not investment advice.
